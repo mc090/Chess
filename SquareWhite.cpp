@@ -1,21 +1,16 @@
 #include "SquareWhite.h"
 
-SquareWhite::SquareWhite(int x, int y):Square(x,y)
+void SquareWhite::setDefaultColor()
 {
-	Default();
+	_sprite.setFillColor(sf::Color(255, 240, 205));
 }
 
-void SquareWhite::Default()
+void SquareWhite::setPositionColor()
 {
-	sprite.setFillColor(sf::Color(255, 240, 205));
+	_sprite.setFillColor(sf::Color(247, 246, 133));
 }
 
-void SquareWhite::Position()
+void SquareWhite::setPotenitalMoveColor()
 {
-	sprite.setFillColor(sf::Color(247, 246, 133));
-}
-
-void SquareWhite::Move()
-{
-	sprite.setFillColor(sf::Color(163, 147, 123));
+	_sprite.setFillColor(sf::Color(163, 147, 123));
 }

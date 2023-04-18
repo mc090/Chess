@@ -1,17 +1,13 @@
 #include "Pawn.h"
 
-Pawn::Pawn(int x, int y, Team side) : Piece(x, y, side)
+Pawn::Pawn(const std::string& position, const team side) :Piece(position, side)
 {
-	std::string Side = side ? "Black" : "White";
-	this->texture.loadFromFile("Textures/" + Side + "Pawn.png");
-	this->sprite.setTexture(this->texture);
-	SetPosition(x, y);
+	const std::string team = side ? "Black" : "White";
+	this->_texture.loadFromFile("Textures/" + team + "Pawn.png");
+	this->_sprite.setTexture(this->_texture);
+	setPosition(position);
 }
 
-void Pawn::Move()
+void Pawn::move()
 {
-	if (y != 0 and y != 7) {
-		side ? y++ : y--;
-		SetPosition(x, y);
-	}
 }

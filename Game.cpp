@@ -1,105 +1,100 @@
 #include "Game.h"
 
-void Game::InitializeWindow()
+void Game::initializeWindow()
 {
-	this->videoMode.width = 1200;
-	this->videoMode.height = 800;
-	this->window = new sf::RenderWindow(sf::VideoMode(this->videoMode), "Chess", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(60);
+	_video_mode.width = 1200;
+	_video_mode.height = 800;
+	_window = new sf::RenderWindow(sf::VideoMode(_video_mode), "Chess", sf::Style::Titlebar | sf::Style::Close);
+	_window->setFramerateLimit(60);
 }
 
-void Game::InitializePieces()
+void Game::initializePieces()
 {
-	pieces.push_back(new Rook(0, 0, black));
-	pieces.push_back(new Knight(1, 0, black));
-	pieces.push_back(new Bishop(2, 0, black));
-	pieces.push_back(new Queen(3, 0, black));
-	pieces.push_back(new King(4, 0, black));
-	pieces.push_back(new Bishop(5, 0, black));
-	pieces.push_back(new Knight(6, 0, black));
-	pieces.push_back(new Rook(7, 0, black));
-	for (int i = 0; i < 8; i++) {
-		pieces.push_back(new Pawn(i, 1, black));
+	_pieces.push_back(new Rook("A8", black));
+	_pieces.push_back(new Knight("B8", black));
+	_pieces.push_back(new Bishop("C8", black));
+	_pieces.push_back(new Queen("D8", black));
+	_pieces.push_back(new King("E8", black));
+	_pieces.push_back(new Bishop("F8", black));
+	_pieces.push_back(new Knight("G8", black));
+	_pieces.push_back(new Rook("H8", black));
+	for (char x = 'A'; x < 'I'; x++) {
+		std::string position;
+		position.append(1, x).append(1, '7');
+		_pieces.push_back(new Pawn(position, black));
 	}
 
-	pieces.push_back(new Rook(0, 7, white));
-	pieces.push_back(new Knight(1, 7, white));
-	pieces.push_back(new Bishop(2, 7, white));
-	pieces.push_back(new Queen(3, 7, white));
-	pieces.push_back(new King(4, 7, white));
-	pieces.push_back(new Bishop(5, 7, white));
-	pieces.push_back(new Knight(6, 7, white));
-	pieces.push_back(new Rook(7, 7, white));
-	for (int i = 0; i < 8; i++) {
-		pieces.push_back(new Pawn(i, 6, white));
-	}
-}
-
-void Game::ClearBoard()
-{
-	for (auto& square : board) {
-		square.second->Default();
+	_pieces.push_back(new Rook("A1", white));
+	_pieces.push_back(new Knight("B1", white));
+	_pieces.push_back(new Bishop("C1", white));
+	_pieces.push_back(new Queen("D1", white));
+	_pieces.push_back(new King("E1", white));
+	_pieces.push_back(new Bishop("F1", white));
+	_pieces.push_back(new Knight("G1", white));
+	_pieces.push_back(new Rook("H1", white));
+	for (char x = 'A'; x < 'I'; x++) {
+		std::string position;
+		position.append(1, x).append(1, '2');
+		_pieces.push_back(new Pawn(position, white));
 	}
 }
 
-void Game::InitializeBoard()
+
+
+void Game::deletePieces()
 {
-	for (double i = 0; i < 8; i++) {
-		for (double j = 0; j < 8; j++) {
-			if (int(j + i) % 2) {
-				board[i + j / 10] = new SquareBlack(i, j);
-			}
-			else {
-				board[i + j / 10] = new SquareWhite(i, j);
-			}
-		}
+	for (const auto& piece : _pieces) {
+		delete piece;
 	}
+	_pieces.clear();
 }
 
-//void Game::UpdatePositions()
-//{
-//	piecesPosition.clear();
-//	for (double i = 0; i < 32; i++)
-//		this->piecesPosition[pieces[i]->GetPosition()] = pieces[i];
-//}
-
-
-
-const bool Game::GetWindowIsOpen() const
+void Game::updatePiecesPositions()
 {
-	return this->window->isOpen();
+	_board().clear();
+	for (const auto piece : _pieces)
+	{
+		_board()[piece->getPosition()] = piece;
+	}
+
 }
 
 
 
-void Game::PollEvents()
+bool Game::getWindowIsOpen() const
 {
-	while (this->window->pollEvent(this->event)) {
-		switch (this->event.type) {
+	return _window->isOpen();
+}
+
+
+
+void Game::pollEvents()
+{
+	while (_window->pollEvent(_event)) {
+		switch (_event.type) {
 
 		case sf::Event::Closed: //jeœli zostanie wciœniety przycisk zamkniecia okna (w prawym górnym rogu) - zamknie sie okno
-			this->window->close();
+			_window->close();
 			break;
 
 		case sf::Event::KeyPressed: //jeœli zostanie wciœniety przycisk "Escape" - zamknie siê okno
-			if (this->event.key.code == sf::Keyboard::Escape)
-				this->window->close();
+			if (_event.key.code == sf::Keyboard::Escape)
+				_window->close();
 			break;
-		case sf::Event::MouseButtonPressed: //jeœli zostanie wciœniêty lewy przycisk myszy bierka na której jest kursor wykona .Move()
-			if (this->event.mouseButton.button == sf::Mouse::Left)
-				if (mousePosition.x >= 0 and mousePosition.x < 800 and mousePosition.y >= 0 and mousePosition.y < 800) {
-					double position = int(mousePosition.x / 100) + (double)(int(mousePosition.y / 100)) / 10;
-					/*if (piecesPosition.count(position)) {
-						piecesPosition[position]->Move();
-						UpdatePositions();
-					}*/
-					for (auto* piece : pieces) {
-						if (position == piece->GetPosition()) {
-							ClearBoard();
-							board[position]->Position();
-							piece->Move();
-							board[piece->GetPosition()]->Position();
-						}
+		case sf::Event::MouseButtonPressed: //jeœli zostanie wciœniêty lewy przycisk myszy bierka na której jest kursor wykona .move()
+			if (_event.mouseButton.button == sf::Mouse::Left)
+				if (_mouse_position.x >= 0 and _mouse_position.x < 800 and _mouse_position.y >= 0 and _mouse_position.y < 800) {
+					std::string position;
+					const char x = _mouse_position.x / 100 + 65;
+					const char y = 57 - _mouse_position.y / 100;
+					position.append(1, x).append(1, y);
+
+					if (_board().count(position)) {
+						_board.setDefaultColors();
+						_board[position]->setPositionColor();
+						_board()[position]->move();
+						_board[_board()[position]->getPosition()]->setPositionColor();
+						updatePiecesPositions();
 					}
 				}
 			break;
@@ -107,29 +102,27 @@ void Game::PollEvents()
 	}
 }
 
-void Game::UpdateMousePositions()
+void Game::updateMousePositions()
 {
-	this->mousePosition = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
+	_mouse_position = _window->mapPixelToCoords(sf::Mouse::getPosition(*_window));
 }
 
 
 
-void Game::Update()
+void Game::update()
 {
-	this->PollEvents();
-	this->UpdateMousePositions();
+	pollEvents();
+	updateMousePositions();
 }
 
-void Game::Render()
+void Game::render() const
 {
-	this->window->clear(sf::Color(49, 46, 43)); //wyczyszczenie starej klatki oraz nadanie koloru t³a
+	_window->clear(sf::Color(49, 46, 43)); //wyczyszczenie starej klatki oraz nadanie koloru t³a
 
-	for (auto& square : board) {
-		square.second->Draw(window);
-	}
-	for (auto* piece : pieces) {
-		piece->Draw(window);
+	_board.draw(_window);
+	for (const auto* piece : _pieces) {
+		piece->draw(_window);
 	}
 
-	this->window->display();
+	_window->display();
 }

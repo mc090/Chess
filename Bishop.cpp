@@ -1,13 +1,13 @@
 #include "Bishop.h"
 
-Bishop::Bishop(int x, int y, Team side) : Piece(x, y, side)
+Bishop::Bishop(const std::string& position,const team side) : Piece(position, side)
 {
-	std::string Side = side ? "Black" : "White";
-	this->texture.loadFromFile("Textures/" + Side + "Bishop.png");
-	this->sprite.setTexture(this->texture);
-	SetPosition(x, y);
+	const std::string team = side ? "Black" : "White";
+	this->_texture.loadFromFile("Textures/" + team + "Bishop.png");
+	this->_sprite.setTexture(this->_texture);
+	setPosition(position);
 }
 
-void Bishop::Move()
+void Bishop::move()
 {
 }

@@ -1,13 +1,13 @@
 #include "Rook.h"
 
-Rook::Rook(int x, int y, Team side) : Piece(x, y, side)
+Rook::Rook(const std::string& position, const team side) :Piece(position, side)
 {
-	std::string Side = side ? "Black" : "White";
-	this->texture.loadFromFile("Textures/" + Side + "Rook.png");
-	this->sprite.setTexture(this->texture);
-	SetPosition(x, y);
+	const std::string team = side ? "Black" : "White";
+	this->_texture.loadFromFile("Textures/" + team + "Rook.png");
+	this->_sprite.setTexture(this->_texture);
+	setPosition(position);
 }
 
-void Rook::Move()
+void Rook::move()
 {
 }

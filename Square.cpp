@@ -1,13 +1,13 @@
 #include "Square.h"
 
-void Square::InitializeSprite()
+void Square::initializeSprite()
 {
-	sprite.setSize(sf::Vector2f(100.f, 100.f));
-	sprite.setPosition(x * 100.f, y * 100.f);
+	_sprite.setSize(sf::Vector2f(100.f, 100.f));
+	_sprite.setPosition((_position[0] - 'A') * 100.f, ('8' - _position[1]) * 100.f);
 }
 
 
-void Square::Draw(sf::RenderWindow* window)
+void Square::draw(sf::RenderWindow* window) const
 {
-    window->draw(this->sprite);
+    window->draw(_sprite);
 }

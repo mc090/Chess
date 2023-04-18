@@ -4,27 +4,26 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
 
 class Square
 {
-	double x;
-	double y;
+	std::string _position;
 
-	void InitializeSprite();
+	void initializeSprite();
 
 protected:
-	sf::RectangleShape sprite;
+	sf::RectangleShape _sprite;
 
 public:
-	Square(int x, int y) :x(x), y(y) {
-		InitializeSprite();
-	};
+	explicit Square(std::string position) :_position(std::move(position)) {
+		initializeSprite();
+	}
+	virtual ~Square() = default;
 
-	virtual void Default() = 0;
-	virtual void Position() = 0;
-	virtual void Move() = 0;
+	virtual void setDefaultColor() = 0;
+	virtual void setPositionColor() = 0;
+	virtual void setPotenitalMoveColor() = 0;
 
-	void Draw(sf::RenderWindow* window);
+	void draw(sf::RenderWindow* window) const;
 };
 

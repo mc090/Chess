@@ -6,6 +6,7 @@ class Knight : public Piece
 {
 
 public:
-	Knight(int x, int y, Team side);
-	void Move() override;
+	Knight(const std::string& position, team side);
+	~Knight() override = default;
+	void move() override;
 };

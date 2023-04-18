@@ -3,8 +3,8 @@
 int main() {
 	Game game;
 
-	while (game.GetWindowIsOpen()) {
-		game.Update();
-		game.Render();
+	while (game.getWindowIsOpen()) {
+		game.update();
+		game.render();
 	}
 }

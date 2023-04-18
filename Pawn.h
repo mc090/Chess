@@ -6,6 +6,7 @@ class Pawn : public Piece
 {
 
 public:
-	Pawn(int x, int y, Team side);
-	void Move() override;
+	Pawn(const std::string& position, team side);
+	~Pawn() override = default;
+	void move() override;
 };

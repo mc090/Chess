@@ -6,6 +6,7 @@ class Queen : public Piece
 {
 
 public:
-	Queen(int x, int y, Team side);
-	void Move() override;
+	Queen(const std::string& position, team side);
+	~Queen() override = default;
+	void move() override;
 };

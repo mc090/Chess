@@ -1,17 +1,17 @@
 #include "Piece.h"
 
 
-double Piece::GetPosition()
+std::string Piece::getPosition()
 {
-	return x + y / 10;
+	return _position;
 }
 
-void Piece::SetPosition(int x, int y)
+void Piece::setPosition(const std::string& position)
 {
-	this->sprite.setPosition(x * 100.f, y * 100.f);
+	_sprite.setPosition((position[0] - 'A') * 100.f, abs(position[1] - '8') * 100.f );
 }
 
-void Piece::Draw(sf::RenderWindow* window)
+void Piece::draw(sf::RenderWindow* window) const
 {
-	window->draw(this->sprite);
+	window->draw(_sprite);
 }

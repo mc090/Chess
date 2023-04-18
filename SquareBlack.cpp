@@ -1,21 +1,16 @@
 #include "SquareBlack.h"
 
-SquareBlack::SquareBlack(int x, int y) :Square(x, y)
+void SquareBlack::setDefaultColor()
 {
-	Default();
+	_sprite.setFillColor(sf::Color(119, 110, 122));
 }
 
-void SquareBlack::Default()
+void SquareBlack::setPositionColor()
 {
-	sprite.setFillColor(sf::Color(119, 110, 122));
+	_sprite.setFillColor(sf::Color(187, 201, 64));
 }
 
-void SquareBlack::Position()
+void SquareBlack::setPotenitalMoveColor()
 {
-	sprite.setFillColor(sf::Color(187, 201, 64));
-}
-
-void SquareBlack::Move()
-{
-	sprite.setFillColor(sf::Color(104, 78, 57));
+	_sprite.setFillColor(sf::Color(104, 78, 57));
 }

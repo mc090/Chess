@@ -6,6 +6,7 @@ class Bishop : public Piece
 {
 
 public:
-	Bishop(int x, int y, Team side);
-	void Move() override;
+	Bishop(const std::string& position, team side);
+	~Bishop() override = default ;
+	void move() override;
 };

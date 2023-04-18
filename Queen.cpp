@@ -1,13 +1,13 @@
 #include "Queen.h"
 
-Queen::Queen(int x, int y, Team side) : Piece(x, y, side)
+Queen::Queen(const std::string& position, const team side) :Piece(position, side)
 {
-	std::string Side = side ? "Black" : "White";
-	this->texture.loadFromFile("Textures/" + Side + "Queen.png");
-	this->sprite.setTexture(this->texture);
-	SetPosition(x, y);
+	const std::string team = side ? "Black" : "White";
+	this->_texture.loadFromFile("Textures/" + team + "Queen.png");
+	this->_sprite.setTexture(this->_texture);
+	setPosition(position);
 }
 
-void Queen::Move()
+void Queen::move()
 {
 }

@@ -1,13 +1,13 @@
 #include "King.h"
 
-King::King(int x, int y, Team side) :Piece(x, y, side)
+King::King(const std::string& position,const team side) :Piece(position, side)
 {
-	std::string Side = side ? "Black" : "White";
-	this->texture.loadFromFile("Textures/" + Side + "King.png");
-	this->sprite.setTexture(this->texture);
-	SetPosition(x, y);
+	const std::string team = side ? "Black" : "White";
+	this->_texture.loadFromFile("Textures/" + team + "King.png");
+	this->_sprite.setTexture(this->_texture);
+	setPosition(position);
 }
 
-void King::Move()
+void King::move()
 {
 }
