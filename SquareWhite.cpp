@@ -1,5 +1,10 @@
 #include "SquareWhite.h"
 
+SquareWhite::SquareWhite(const std::string& position) :Square(position)
+{
+	setDefaultColor();
+}
+
 void SquareWhite::setDefaultColor()
 {
 	_sprite.setFillColor(sf::Color(255, 240, 205));
@@ -12,5 +17,5 @@ void SquareWhite::setPositionColor()
 
 void SquareWhite::setPotenitalMoveColor()
 {
-	_sprite.setFillColor(sf::Color(163, 147, 123));
+	_sprite.setFillColor(sf::Color(255, 0, 255));
 }

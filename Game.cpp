@@ -10,36 +10,33 @@ void Game::initializeWindow()
 
 void Game::initializePieces()
 {
-	_pieces.push_back(new Rook("A8", black));
-	_pieces.push_back(new Knight("B8", black));
-	_pieces.push_back(new Bishop("C8", black));
-	_pieces.push_back(new Queen("D8", black));
-	_pieces.push_back(new King("E8", black));
-	_pieces.push_back(new Bishop("F8", black));
-	_pieces.push_back(new Knight("G8", black));
-	_pieces.push_back(new Rook("H8", black));
+	_pieces.push_back(new Rook(black, "A8"));
+	_pieces.push_back(new Knight(black , "B8"));
+	_pieces.push_back(new Bishop(black, "C8"));
+	_pieces.push_back(new Queen(black, "D8"));
+	_pieces.push_back(new King(black, "E8"));
+	_pieces.push_back(new Bishop(black, "F8"));
+	_pieces.push_back(new Knight(black, "G8"));
+	_pieces.push_back(new Rook(black, "H8"));
 	for (char x = 'A'; x < 'I'; x++) {
 		std::string position;
 		position.append(1, x).append(1, '7');
-		_pieces.push_back(new Pawn(position, black));
+		_pieces.push_back(new Pawn(black, position));
 	}
-
-	_pieces.push_back(new Rook("A1", white));
-	_pieces.push_back(new Knight("B1", white));
-	_pieces.push_back(new Bishop("C1", white));
-	_pieces.push_back(new Queen("D1", white));
-	_pieces.push_back(new King("E1", white));
-	_pieces.push_back(new Bishop("F1", white));
-	_pieces.push_back(new Knight("G1", white));
-	_pieces.push_back(new Rook("H1", white));
+	_pieces.push_back(new Rook(white, "A1"));
+	_pieces.push_back(new Knight(white, "B1"));
+	_pieces.push_back(new Bishop(white, "C1"));
+	_pieces.push_back(new Queen(white, "D1"));
+	_pieces.push_back(new King(white, "E1"));
+	_pieces.push_back(new Bishop(white, "F1"));
+	_pieces.push_back(new Knight(white, "G1"));
+	_pieces.push_back(new Rook(white, "H1"));
 	for (char x = 'A'; x < 'I'; x++) {
 		std::string position;
 		position.append(1, x).append(1, '2');
-		_pieces.push_back(new Pawn(position, white));
+		_pieces.push_back(new Pawn(white, position));
 	}
 }
-
-
 
 void Game::deletePieces()
 {
@@ -49,15 +46,42 @@ void Game::deletePieces()
 	_pieces.clear();
 }
 
+
+
+
 void Game::updatePiecesPositions()
 {
-	_board().clear();
+	_board.getAllPiecesPosition().clear();
 	for (const auto piece : _pieces)
 	{
-		_board()[piece->getPosition()] = piece;
+		_board.setPiecePosition(piece->getPosition(), piece);
 	}
 
 }
+
+std::string Game::getClickedPiecePosition() const
+{
+	std::string position;
+	const char column_char = _mouse_position.x / 100 + 65;
+	const char row_char = 57 - _mouse_position.y / 100;
+	position += column_char;
+	position += row_char;
+	return position;
+}
+
+
+Game::Game() :_window(nullptr), _event()
+{
+	initializeWindow();
+	initializePieces();
+	updatePiecesPositions();
+}
+
+Game::~Game()
+{
+	delete _window;
+	deletePieces();
+};
 
 
 
@@ -73,29 +97,20 @@ void Game::pollEvents()
 	while (_window->pollEvent(_event)) {
 		switch (_event.type) {
 
-		case sf::Event::Closed: //jeœli zostanie wciœniety przycisk zamkniecia okna (w prawym górnym rogu) - zamknie sie okno
+		case sf::Event::Closed:
 			_window->close();
 			break;
 
-		case sf::Event::KeyPressed: //jeœli zostanie wciœniety przycisk "Escape" - zamknie siê okno
+		case sf::Event::KeyPressed:
 			if (_event.key.code == sf::Keyboard::Escape)
 				_window->close();
 			break;
-		case sf::Event::MouseButtonPressed: //jeœli zostanie wciœniêty lewy przycisk myszy bierka na której jest kursor wykona .move()
+		case sf::Event::MouseButtonPressed:
 			if (_event.mouseButton.button == sf::Mouse::Left)
 				if (_mouse_position.x >= 0 and _mouse_position.x < 800 and _mouse_position.y >= 0 and _mouse_position.y < 800) {
-					std::string position;
-					const char x = _mouse_position.x / 100 + 65;
-					const char y = 57 - _mouse_position.y / 100;
-					position.append(1, x).append(1, y);
-
-					if (_board().count(position)) {
-						_board.setDefaultColors();
-						_board[position]->setPositionColor();
-						_board()[position]->move();
-						_board[_board()[position]->getPosition()]->setPositionColor();
-						updatePiecesPositions();
-					}
+					std::string position = getClickedPiecePosition();
+					_board.move(position);
+					updatePiecesPositions();
 				}
 			break;
 		}
@@ -106,8 +121,6 @@ void Game::updateMousePositions()
 {
 	_mouse_position = _window->mapPixelToCoords(sf::Mouse::getPosition(*_window));
 }
-
-
 
 void Game::update()
 {

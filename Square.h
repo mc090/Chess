@@ -15,9 +15,7 @@ protected:
 	sf::RectangleShape _sprite;
 
 public:
-	explicit Square(std::string position) :_position(std::move(position)) {
-		initializeSprite();
-	}
+	explicit Square(std::string position);
 	virtual ~Square() = default;
 
 	virtual void setDefaultColor() = 0;

@@ -1,13 +1,34 @@
 #include "King.h"
 
-King::King(const std::string& position,const team side) :Piece(position, side)
+void King::initializeTexture()
 {
-	const std::string team = side ? "Black" : "White";
+	const std::string team = _side ? "Black" : "White";
 	this->_texture.loadFromFile("Textures/" + team + "King.png");
 	this->_sprite.setTexture(this->_texture);
+}
+
+
+
+King::King(const team side, const std::string& position) :Piece(side, position)
+{
+	initializeTexture();
 	setPosition(position);
 }
 
-void King::move()
+
+
+std::vector<std::string> King::getPotentialMoves()
+{
+	std::vector<std::string> potential_moves;
+	return potential_moves;
+}
+
+std::vector<std::string> King::getPathTo(std::string position, const std::string& destination)
+{
+	std::vector<std::string> path;
+	return path;
+}
+
+void King::move(std::vector<std::string> potential_moves)
 {
 }

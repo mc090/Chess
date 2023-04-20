@@ -2,11 +2,15 @@
 
 #include "Piece.h"
 
-class Bishop : public Piece
+class Bishop final : public Piece
 {
+	void initializeTexture();
 
 public:
-	Bishop(const std::string& position, team side);
+	Bishop(const team side, const std::string& position);
 	~Bishop() override = default ;
-	void move() override;
+
+	std::vector<std::string> getPotentialMoves() override;
+	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) override;
+	void move(std::vector<std::string> potential_moves) override;
 };

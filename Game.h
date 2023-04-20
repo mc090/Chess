@@ -17,45 +17,32 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-/*
-Klasa odpowiadaj¹ca za obs³ugê gry
-*/
+
 class Game
 {
-	//zmienne
-	sf::RenderWindow* _window; //okno na którym wyœwietla siê aplikacja
-	sf::VideoMode _video_mode; //definiuje wymiary okna
-	sf::Event _event; //odpowiada za komunikacjê z u¿ytkownikiem i odbieranie od niego zdarzeñ
-	sf::Vector2f _mouse_position; //lokalizacja myszki wzgledem okna aplikacji
+	sf::RenderWindow* _window;
+	sf::VideoMode _video_mode;
+	sf::Event _event;
+	sf::Vector2f _mouse_position;
 
-	//obiekty
 	std::vector<Piece*> _pieces;
 	Board _board;
 
-	//metody prywatne
-	void initializeWindow(); //metoda tworz¹ca okno aplikacji
-	void initializePieces(); //metoda tworz¹ca i zapisuj¹ca do wektora pionki
+	void initializeWindow();
+	void initializePieces();
 	void deletePieces();
 
 	void updatePiecesPositions();
+	std::string getClickedPiecePosition() const;
 
 public:
-	Game() :_window(nullptr), _event(){
-		initializeWindow();
-		initializePieces();
-		updatePiecesPositions();
-	}
-	~Game() {
-		delete _window;
-		deletePieces();
-	}
+	Game();
+	~Game();
 
-	//metody dostêpowe
-	bool getWindowIsOpen() const; //zwraca informacjê o stanie otwarcia okna aplikacji
+	bool getWindowIsOpen() const;
 
-	//metody odpowidzialne za komunikacje z u¿ytkownikiem
-	void pollEvents(); //metoda umo¿liwiaj¹ca dzia³anie zdarzeñ
-	void update(); //metoda aktualizuj¹ca aktualny wygl¹d okna aplikacji
-	void updateMousePositions(); //metoda aktualizuj¹ca dane o po³o¿eniu myszy wzglêdem okna
-	void render() const; //metoda wyœwietlaj¹ca aktualny stan gry
+	void pollEvents();
+	void update();
+	void updateMousePositions();
+	void render() const;
 };

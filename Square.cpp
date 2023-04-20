@@ -7,7 +7,15 @@ void Square::initializeSprite()
 }
 
 
+
+Square::Square(std::string position) :_position(std::move(position))
+{
+	initializeSprite();
+}
+
+
+
 void Square::draw(sf::RenderWindow* window) const
 {
-    window->draw(_sprite);
+	window->draw(_sprite);
 }

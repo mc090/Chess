@@ -2,11 +2,15 @@
 
 #include "Piece.h"
 
-class King : public Piece
+class King final : public Piece
 {
+	void initializeTexture();
 
 public:
-	King(const std::string& position, team side);
+	King(const team side, const std::string& position);
 	~King() override = default;
-	void move() override;
+
+	std::vector<std::string> getPotentialMoves() override;
+	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) override;
+	void move(std::vector<std::string> potential_moves) override;
 };

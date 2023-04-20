@@ -14,20 +14,25 @@ class Board
 
 	void initializeBoard();
 
-	void deletePointers();
+	void deleteBoard();
 
 public:
-	Board(){ initializeBoard();}
-	~Board() { deletePointers(); }
+	Board();
+	~Board();
 
-	Square* operator[](const std::string& key) {
-		return _board[key];
-	}
-	std::map<std::string, Piece*>& operator()() {
-		return _pieces_position;
-	}
+	Square* operator[](const std::string& key);
+
+	std::map<std::string, Piece*>& getAllPiecesPosition();
+	void setPiecePosition(const std::string& position, Piece* piece);
 
 	void setDefaultColors() const;
+
+	void move(const std::string& position);
+
+	std::vector<std::string> availableSquares(const std::string& piece_position);
+	std::vector<std::string> isMovePossible(const std::string& destination, Piece* piece);
+	void showAvailableMoves(const std::string& piece_position);
+
 	void draw(sf::RenderWindow* window) const;
 };
 
