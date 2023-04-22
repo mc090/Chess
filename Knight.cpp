@@ -17,7 +17,7 @@ Knight::Knight(const team side, const std::string& position) :Piece(side, positi
 
 
 
-std::vector<std::string> Knight::getPotentialMoves()
+std::vector<std::string> Knight::getPotentialDestinations()
 {
 	std::vector<std::string> potential_moves;
 	return potential_moves;
@@ -27,8 +27,4 @@ std::vector<std::string> Knight::getPathTo(std::string position, const std::stri
 {
 	std::vector<std::string> path;
 	return path;
-}
-
-void Knight::move(std::vector<std::string> potential_moves)
-{
 }

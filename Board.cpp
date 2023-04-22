@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Pawn.h"
 
 
 void Board::initializeBoard()
@@ -31,7 +32,7 @@ void Board::deleteBoard()
 
 
 
-Board::Board()
+Board::Board() : _chosen_piece(nullptr)
 {
 	initializeBoard();
 }
@@ -69,28 +70,33 @@ void Board::setDefaultColors() const
 	}
 }
 
-void Board::move(const std::string& position)
+
+
+void Board::getMove(const std::string& position)
 {
-	if (_pieces_position[position]) {
-		setDefaultColors();
-		_board[position]->setPositionColor();
-
+	setDefaultColors();
+	if (_pieces_position[position] and !_pieces_position[position]->isToDelete()) {
+		_chosen_piece = _pieces_position[position];
 		showAvailableMoves(position);
-
-		const std::string new_position = _pieces_position[position]->getPosition();
-		_board[new_position]->setPositionColor();
 	}
 }
 
+void Board::showAvailableMoves(const std::string& piece_position)
+{
+	const std::vector<std::string> available_moves = getAvailableMoves(piece_position);
+	for (const auto& position : available_moves)
+	{
+		_board[position]->setPotenitalMoveColor();
+	}
+}
 
-std::vector<std::string> Board::availableSquares(const std::string& piece_position)
+std::vector<std::string> Board::getAvailableMoves(const std::string& piece_position)
 {
 	std::vector<std::string> positions;
-	Piece* piece = _pieces_position[piece_position];
-	const std::vector<std::string> potential_destinations = piece->getPotentialMoves();
+	const std::vector<std::string> potential_destinations = _chosen_piece->getPotentialDestinations();
 	for (const auto& potential_destination : potential_destinations)
 	{
-		const std::vector<std::string> checked_positions = isMovePossible(potential_destination, piece);
+		const std::vector<std::string> checked_positions = getMoves(potential_destination);
 		for (const auto& position : checked_positions)
 		{
 			positions.push_back(position);
@@ -99,38 +105,71 @@ std::vector<std::string> Board::availableSquares(const std::string& piece_positi
 	return positions;
 }
 
-std::vector<std::string> Board::isMovePossible(const std::string& destination, Piece* piece)
+std::vector<std::string> Board::getMoves(const std::string& destination)
 {
 	std::vector<std::string> positions;
-	const std::vector<std::string> path = piece->getPathTo(piece->getPosition(), destination);
-	for (auto& position : path)
+	const std::string piece_position = _chosen_piece->getPosition();
+	team piece_side = _chosen_piece->getSide();
+	const std::vector<std::string> path = _chosen_piece->getPathTo(piece_position, destination); //D3 D4
+	if (!dynamic_cast<Pawn*>(_chosen_piece))
 	{
-		if (_pieces_position[position])
+		for (auto& position : path)
 		{
-			if (_pieces_position[position]->getSide() == piece->getSide())
+			if (_pieces_position[position] and !_pieces_position[position]->isToDelete())
 			{
+				if (_pieces_position[position]->getSide() != piece_side)
+				{
+					positions.push_back(position);
+				}
 				return positions;
 			}
-			positions.push_back(position);
-			return positions;
+			else
+			{
+				positions.push_back(position);
+			}
 		}
-		else
+	}
+	else
+	{
+		for (auto& position : path)
 		{
-			positions.push_back(position);
+			if (position[0] == piece_position[0] + 1 or position[0] == piece_position[0] - 1)
+			{
+				if (_pieces_position[position] and !_pieces_position[position]->isToDelete() and _pieces_position[position]->getSide() != piece_side)
+				{
+					positions.push_back(position);
+				}
+			}
+			else
+			{
+				if (_pieces_position[position] and !_pieces_position[position]->isToDelete())
+				{
+					return positions;
+				}
+				positions.push_back(position);
+			}
 		}
 	}
 	return positions;
 }
 
-void Board::showAvailableMoves(const std::string& piece_position)
+void Board::makeMove(const std::string& position, int& taken_black, int& taken_white)
 {
-	const std::vector<std::string> available_moves = availableSquares(piece_position);
-	for(const auto& position:available_moves)
+	setDefaultColors();
+	const std::string old_position = _chosen_piece->getPosition();
+	_board[old_position]->setPositionColor();
+	if(_pieces_position[position] and !_pieces_position[position]->isToDelete())
 	{
-		_board[position]->setPotenitalMoveColor();
+		_pieces_position[position]->setToDelete(taken_black, taken_white);
 	}
+	if(dynamic_cast<Pawn*>(_chosen_piece))
+	{
+		Pawn* pawn = dynamic_cast<Pawn*>(_chosen_piece);
+		pawn->setIsStartingPosition(false);
+	}
+	_chosen_piece->setPosition(position);
+	_board[position]->setPositionColor();
 }
-
 
 
 void Board::draw(sf::RenderWindow* window) const

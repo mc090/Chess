@@ -11,6 +11,7 @@ class Board
 {
 	std::map<std::string, Square*> _board;
 	std::map<std::string, Piece*> _pieces_position;
+	Piece* _chosen_piece;
 
 	void initializeBoard();
 
@@ -27,12 +28,11 @@ public:
 
 	void setDefaultColors() const;
 
-	void move(const std::string& position);
-
-	std::vector<std::string> availableSquares(const std::string& piece_position);
-	std::vector<std::string> isMovePossible(const std::string& destination, Piece* piece);
+	void getMove(const std::string& position);
 	void showAvailableMoves(const std::string& piece_position);
+	std::vector<std::string> getAvailableMoves(const std::string& piece_position);
+	std::vector<std::string> getMoves(const std::string& destination);
+	void makeMove(const std::string& position, int& taken_black, int& taken_white);
 
 	void draw(sf::RenderWindow* window) const;
 };
-

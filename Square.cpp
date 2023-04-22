@@ -8,12 +8,25 @@ void Square::initializeSprite()
 
 
 
-Square::Square(std::string position) :_position(std::move(position))
+Square::Square(std::string position) :_position(std::move(position)), _is_selected(false)
 {
 	initializeSprite();
 }
 
+void Square::setDefaultColor()
+{
+	_is_selected = false;
+}
 
+void Square::setPotenitalMoveColor()
+{
+	_is_selected = true;
+}
+
+bool Square::getIsSelected() const
+{
+	return _is_selected;
+}
 
 void Square::draw(sf::RenderWindow* window) const
 {

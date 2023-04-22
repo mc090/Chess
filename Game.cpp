@@ -11,7 +11,7 @@ void Game::initializeWindow()
 void Game::initializePieces()
 {
 	_pieces.push_back(new Rook(black, "A8"));
-	_pieces.push_back(new Knight(black , "B8"));
+	_pieces.push_back(new Knight(black, "B8"));
 	_pieces.push_back(new Bishop(black, "C8"));
 	_pieces.push_back(new Queen(black, "D8"));
 	_pieces.push_back(new King(black, "E8"));
@@ -52,11 +52,10 @@ void Game::deletePieces()
 void Game::updatePiecesPositions()
 {
 	_board.getAllPiecesPosition().clear();
-	for (const auto piece : _pieces)
+	for (auto& piece : _pieces)
 	{
 		_board.setPiecePosition(piece->getPosition(), piece);
 	}
-
 }
 
 std::string Game::getClickedPiecePosition() const
@@ -70,7 +69,7 @@ std::string Game::getClickedPiecePosition() const
 }
 
 
-Game::Game() :_window(nullptr), _event()
+Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0)
 {
 	initializeWindow();
 	initializePieces();
@@ -109,7 +108,14 @@ void Game::pollEvents()
 			if (_event.mouseButton.button == sf::Mouse::Left)
 				if (_mouse_position.x >= 0 and _mouse_position.x < 800 and _mouse_position.y >= 0 and _mouse_position.y < 800) {
 					std::string position = getClickedPiecePosition();
-					_board.move(position);
+					if (!_board[position]->getIsSelected())
+					{
+						_board.getMove(position);
+					}
+					else
+					{
+						_board.makeMove(position, _taken_black, _taken_white);
+					}
 					updatePiecesPositions();
 				}
 			break;

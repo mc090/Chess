@@ -17,7 +17,7 @@ King::King(const team side, const std::string& position) :Piece(side, position)
 
 
 
-std::vector<std::string> King::getPotentialMoves()
+std::vector<std::string> King::getPotentialDestinations()
 {
 	std::vector<std::string> potential_moves;
 	return potential_moves;
@@ -27,8 +27,4 @@ std::vector<std::string> King::getPathTo(std::string position, const std::string
 {
 	std::vector<std::string> path;
 	return path;
-}
-
-void King::move(std::vector<std::string> potential_moves)
-{
 }

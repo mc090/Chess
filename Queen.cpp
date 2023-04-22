@@ -16,7 +16,7 @@ Queen::Queen(const team side,const std::string& position) :Piece(side,position)
 }
 
 
-std::vector<std::string> Queen::getPotentialMoves()
+std::vector<std::string> Queen::getPotentialDestinations()
 {
 	std::vector<std::string> potential_moves;
 	return potential_moves;
@@ -26,8 +26,4 @@ std::vector<std::string> Queen::getPathTo(std::string position, const std::strin
 {
 	std::vector<std::string> path;
 	return path;
-}
-
-void Queen::move(std::vector<std::string> potential_moves)
-{
 }

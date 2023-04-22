@@ -1,5 +1,6 @@
 #pragma once
 #include "Square.h"
+
 class SquareBlack : public Square
 {
 public:
@@ -10,4 +11,3 @@ public:
 	void setPositionColor() override;
 	void setPotenitalMoveColor() override;
 };
-

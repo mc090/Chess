@@ -17,7 +17,7 @@ Bishop::Bishop(const team side, const std::string& position) : Piece(side, posit
 
 
 
-std::vector<std::string> Bishop::getPotentialMoves()
+std::vector<std::string> Bishop::getPotentialDestinations()
 {
 	std::vector<std::string> potential_moves;
 	return potential_moves;
@@ -27,8 +27,4 @@ std::vector<std::string> Bishop::getPathTo(std::string position, const std::stri
 {
 	std::vector<std::string> path;
 	return path;
-}
-
-void Bishop::move(std::vector<std::string> potential_moves)
-{
 }

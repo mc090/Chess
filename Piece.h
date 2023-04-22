@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Enum.h"
+
 #include <iostream>
 
 #include <SFML/Graphics.hpp>
@@ -7,21 +9,14 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
-enum team {
-	white = 0,
-	black,
-};
-
 
 class Piece
 {
 protected:
 	sf::Texture _texture;
 	sf::Sprite _sprite;
-	const team _side;
+	team _side;
 	std::string _position;
-
-
 
 public:
 	Piece(const team side, std::string position);
@@ -30,10 +25,11 @@ public:
 	std::string getPosition();
 	team getSide() const;
 	void setPosition(const std::string& position);
+	void setToDelete(int& taken_black, int& taken_white);
+	bool isToDelete() const;
 
-	virtual std::vector<std::string> getPotentialMoves() = 0;
+	virtual std::vector<std::string> getPotentialDestinations() = 0;
 	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) = 0;
-	virtual void move(std::vector<std::string> potential_moves) = 0;
 
 	void draw(sf::RenderWindow* window) const;
 };

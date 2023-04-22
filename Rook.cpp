@@ -16,7 +16,7 @@ Rook::Rook(const team side, const std::string& position) :Piece(side, position)
 }
 
 
-std::vector<std::string> Rook::getPotentialMoves()
+std::vector<std::string> Rook::getPotentialDestinations()
 {
 	std::vector<std::string> potential_moves;
 	return potential_moves;
@@ -26,8 +26,4 @@ std::vector<std::string> Rook::getPathTo(std::string position, const std::string
 {
 	std::vector<std::string> path;
 	return path;
-}
-
-void Rook::move(std::vector<std::string> potential_moves)
-{
 }

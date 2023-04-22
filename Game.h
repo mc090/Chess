@@ -24,9 +24,10 @@ class Game
 	sf::VideoMode _video_mode;
 	sf::Event _event;
 	sf::Vector2f _mouse_position;
-
 	std::vector<Piece*> _pieces;
 	Board _board;
+	int _taken_black;
+	int _taken_white;
 
 	void initializeWindow();
 	void initializePieces();

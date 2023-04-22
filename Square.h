@@ -8,6 +8,7 @@
 class Square
 {
 	std::string _position;
+	bool _is_selected;
 
 	void initializeSprite();
 
@@ -18,9 +19,10 @@ public:
 	explicit Square(std::string position);
 	virtual ~Square() = default;
 
-	virtual void setDefaultColor() = 0;
+	virtual void setDefaultColor();
 	virtual void setPositionColor() = 0;
-	virtual void setPotenitalMoveColor() = 0;
+	virtual void setPotenitalMoveColor();
+	bool getIsSelected() const;
 
 	void draw(sf::RenderWindow* window) const;
 };
