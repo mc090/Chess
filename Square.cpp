@@ -3,12 +3,12 @@
 void Square::initializeSprite()
 {
 	_sprite.setSize(sf::Vector2f(100.f, 100.f));
-	_sprite.setPosition((_position[0] - 'A') * 100.f, ('8' - _position[1]) * 100.f);
+	_sprite.setPosition((_position.getColumn() - 'A') * 100.f, ('8' - _position.getRow()) * 100.f);
 }
 
 
 
-Square::Square(std::string position) :_position(std::move(position)), _is_selected(false)
+Square::Square(const Position& position) :_position(position),_is_selected(false), _is_en_passant_possible(false)
 {
 	initializeSprite();
 }
@@ -16,9 +16,15 @@ Square::Square(std::string position) :_position(std::move(position)), _is_select
 void Square::setDefaultColor()
 {
 	_is_selected = false;
+	_is_en_passant_possible = false;
 }
 
-void Square::setPotenitalMoveColor()
+void Square::setPositionColor()
+{
+	_is_en_passant_possible = true;
+}
+
+void Square::setAvaliableMoveColor()
 {
 	_is_selected = true;
 }
@@ -26,6 +32,11 @@ void Square::setPotenitalMoveColor()
 bool Square::getIsSelected() const
 {
 	return _is_selected;
+}
+
+bool Square::getIsEnPassantPossible() const
+{
+	return _is_en_passant_possible;
 }
 
 void Square::draw(sf::RenderWindow* window) const

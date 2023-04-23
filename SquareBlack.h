@@ -4,10 +4,10 @@
 class SquareBlack : public Square
 {
 public:
-	explicit SquareBlack(const std::string& position);
+	explicit SquareBlack(const Position& position);
 	~SquareBlack() override = default;
 
 	void setDefaultColor() override;
 	void setPositionColor() override;
-	void setPotenitalMoveColor() override;
+	void setAvaliableMoveColor() override;
 };

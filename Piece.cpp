@@ -1,12 +1,18 @@
 #include "Piece.h"
 
 
-Piece::Piece(const team side, std::string position) :_side(side), _position(std::move(position))
+void Piece::initializePosition()
 {
-
+	const int x = _position.getColumn() - 'A';
+	const int y = '8' - _position.getRow();
+	_sprite.setPosition(x * 100.f, y * 100.f);
 }
 
-std::string Piece::getPosition()
+Piece::Piece(const team side, const std::string& position) :_side(side), _position(position)
+{
+}
+
+Position Piece::getPosition() const
 {
 	return _position;
 }
@@ -16,17 +22,17 @@ team Piece::getSide() const
 	return _side;
 }
 
-void Piece::setPosition(const std::string& position)
+void Piece::setPosition(const Position& position)
 {
-	const int x = position[0] - 'A';
-	const int y = '8' - position[1];
 	_position = position;
+	const int x = position.getColumn() - 'A';
+	const int y = '8' - position.getRow();
 	_sprite.setPosition(x * 100.f, y * 100.f);
 }
 
 void Piece::setToDelete(int& taken_black, int& taken_white)
 {
-	_position = _side ? "GG" : "FF";
+	_position.set(_side ? "GG" : "FF");
 	const int count = _side ? taken_black++ : taken_white++;
 	const float y = _side ? 700.f : 20.f;
 	_sprite.setPosition(840.f + ((count % 8) * 40.f), y + (count / 8) * 40);

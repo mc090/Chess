@@ -1,6 +1,6 @@
 #include "SquareBlack.h"
 
-SquareBlack::SquareBlack(const std::string& position) :Square(position)
+SquareBlack::SquareBlack(const Position& position) :Square(position)
 {
 	setDefaultColor();
 }
@@ -13,11 +13,12 @@ void SquareBlack::setDefaultColor()
 
 void SquareBlack::setPositionColor()
 {
+	Square::setPositionColor();
 	_sprite.setFillColor(sf::Color(187, 201, 64));
 }
 
-void SquareBlack::setPotenitalMoveColor()
+void SquareBlack::setAvaliableMoveColor()
 {
-	Square::setPotenitalMoveColor();
+	Square::setAvaliableMoveColor();
 	_sprite.setFillColor(sf::Color(128, 0, 128));
 }

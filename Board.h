@@ -9,9 +9,11 @@
 
 class Board
 {
-	std::map<std::string, Square*> _board;
-	std::map<std::string, Piece*> _pieces_position;
+	std::map<Position, Square*> _board;
+	std::map<Position, Piece*> _pieces_position;
 	Piece* _chosen_piece;
+
+	bool _en_passant;
 
 	void initializeBoard();
 
@@ -21,18 +23,20 @@ public:
 	Board();
 	~Board();
 
-	Square* operator[](const std::string& key);
+	Square* operator[](const Position& key);
 
-	std::map<std::string, Piece*>& getAllPiecesPosition();
-	void setPiecePosition(const std::string& position, Piece* piece);
+	std::map<Position, Piece*>& getAllPiecesPosition();
+	void setPiecePosition(const Position& position, Piece* piece);
 
-	void setDefaultColors() const;
+	void hardColorReset() const;
+	void softColorReset() const;
 
-	void getMove(const std::string& position);
-	void showAvailableMoves(const std::string& piece_position);
-	std::vector<std::string> getAvailableMoves(const std::string& piece_position);
-	std::vector<std::string> getMoves(const std::string& destination);
-	void makeMove(const std::string& position, int& taken_black, int& taken_white);
+	void getMove(const Position& position);
+	void showAvailableMoves(const Position& piece_position);
+	std::vector<Position> getAvaliableMoves(const Position& destination);
+	void makeMove(const Position& position, int& taken_black, int& taken_white);
+
+	bool enPassant(const Position& position);
 
 	void draw(sf::RenderWindow* window) const;
 };

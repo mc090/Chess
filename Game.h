@@ -34,7 +34,7 @@ class Game
 	void deletePieces();
 
 	void updatePiecesPositions();
-	std::string getClickedPiecePosition() const;
+	Position getClickedPiecePosition() const;
 
 public:
 	Game();

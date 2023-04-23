@@ -10,6 +10,7 @@ public:
 	Knight(const team side, const std::string& position);
 	~Knight() override = default;
 
-	std::vector<std::string> getPotentialDestinations() override;
-	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) override;
+	void getMove(std::vector<Position>& potential_destinations, const int& i,const int& j);
+	std::vector<Position> getPotentialDestinations() override;
+	virtual std::vector<Position> getPathTo(const Position& destination) override;
 };

@@ -18,9 +18,10 @@ void Game::initializePieces()
 	_pieces.push_back(new Bishop(black, "F8"));
 	_pieces.push_back(new Knight(black, "G8"));
 	_pieces.push_back(new Rook(black, "H8"));
-	for (char x = 'A'; x < 'I'; x++) {
+	for (char column_char = 'A'; column_char < 'I'; column_char++) {
 		std::string position;
-		position.append(1, x).append(1, '7');
+		position += column_char;
+		position += '7';
 		_pieces.push_back(new Pawn(black, position));
 	}
 	_pieces.push_back(new Rook(white, "A1"));
@@ -31,9 +32,10 @@ void Game::initializePieces()
 	_pieces.push_back(new Bishop(white, "F1"));
 	_pieces.push_back(new Knight(white, "G1"));
 	_pieces.push_back(new Rook(white, "H1"));
-	for (char x = 'A'; x < 'I'; x++) {
+	for (char column_char = 'A'; column_char < 'I'; column_char++) {
 		std::string position;
-		position.append(1, x).append(1, '2');
+		position += column_char;
+		position += '2';
 		_pieces.push_back(new Pawn(white, position));
 	}
 }
@@ -52,19 +54,17 @@ void Game::deletePieces()
 void Game::updatePiecesPositions()
 {
 	_board.getAllPiecesPosition().clear();
-	for (auto& piece : _pieces)
+	for (const auto& piece : _pieces)
 	{
 		_board.setPiecePosition(piece->getPosition(), piece);
 	}
 }
 
-std::string Game::getClickedPiecePosition() const
+Position Game::getClickedPiecePosition() const
 {
-	std::string position;
 	const char column_char = _mouse_position.x / 100 + 65;
 	const char row_char = 57 - _mouse_position.y / 100;
-	position += column_char;
-	position += row_char;
+	const Position position(column_char, row_char);
 	return position;
 }
 
@@ -107,7 +107,7 @@ void Game::pollEvents()
 		case sf::Event::MouseButtonPressed:
 			if (_event.mouseButton.button == sf::Mouse::Left)
 				if (_mouse_position.x >= 0 and _mouse_position.x < 800 and _mouse_position.y >= 0 and _mouse_position.y < 800) {
-					std::string position = getClickedPiecePosition();
+					Position position = getClickedPiecePosition();
 					if (!_board[position]->getIsSelected())
 					{
 						_board.getMove(position);
@@ -136,10 +136,10 @@ void Game::update()
 
 void Game::render() const
 {
-	_window->clear(sf::Color(49, 46, 43)); //wyczyszczenie starej klatki oraz nadanie koloru t³a
+	_window->clear(sf::Color(49, 46, 43));
 
 	_board.draw(_window);
-	for (const auto* piece : _pieces) {
+	for (auto piece : _pieces) {
 		piece->draw(_window);
 	}
 

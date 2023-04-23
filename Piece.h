@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Enum.h"
+#include "Position.h"
 
 #include <iostream>
 
@@ -16,20 +17,22 @@ protected:
 	sf::Texture _texture;
 	sf::Sprite _sprite;
 	team _side;
-	std::string _position;
+	Position _position;
+
+	void initializePosition();
 
 public:
-	Piece(const team side, std::string position);
+	Piece(team side, const std::string& position);
 	virtual ~Piece() = default;
 
-	std::string getPosition();
+	Position getPosition() const;
 	team getSide() const;
-	void setPosition(const std::string& position);
+	void setPosition(const Position& position);
 	void setToDelete(int& taken_black, int& taken_white);
 	bool isToDelete() const;
 
-	virtual std::vector<std::string> getPotentialDestinations() = 0;
-	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) = 0;
+	virtual std::vector<Position> getPotentialDestinations() = 0;
+	virtual std::vector<Position> getPathTo(const Position& destination) = 0;
 
 	void draw(sf::RenderWindow* window) const;
 };

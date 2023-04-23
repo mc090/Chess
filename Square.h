@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Position.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -7,8 +9,9 @@
 
 class Square
 {
-	std::string _position;
+	Position _position;
 	bool _is_selected;
+	bool _is_en_passant_possible;
 
 	void initializeSprite();
 
@@ -16,13 +19,14 @@ protected:
 	sf::RectangleShape _sprite;
 
 public:
-	explicit Square(std::string position);
+	explicit Square(const Position& position);
 	virtual ~Square() = default;
 
 	virtual void setDefaultColor();
-	virtual void setPositionColor() = 0;
-	virtual void setPotenitalMoveColor();
+	virtual void setPositionColor();
+	virtual void setAvaliableMoveColor();
 	bool getIsSelected() const;
+	bool getIsEnPassantPossible() const;
 
 	void draw(sf::RenderWindow* window) const;
 };

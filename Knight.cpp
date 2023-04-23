@@ -12,19 +12,37 @@ void Knight::initializeTexture()
 Knight::Knight(const team side, const std::string& position) :Piece(side, position)
 {
 	initializeTexture();
-	setPosition(position);
+	initializePosition();
 }
 
 
-
-std::vector<std::string> Knight::getPotentialDestinations()
+void Knight::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j)
 {
-	std::vector<std::string> potential_moves;
-	return potential_moves;
+	const char column = _position.getColumn() + i;
+	const char row = _position.getRow() + j;
+	if (column > '@' and column < 'I' and row > '0' and row < '9') {
+		const Position position(column, row);
+		potential_destinations.push_back(position);
+	}
 }
 
-std::vector<std::string> Knight::getPathTo(std::string position, const std::string& destination)
+std::vector<Position> Knight::getPotentialDestinations()
 {
-	std::vector<std::string> path;
+	std::vector<Position> potential_destinations;
+	getMove(potential_destinations, -2, 1);
+	getMove(potential_destinations, -2, -1);
+	getMove(potential_destinations, -1, 2);
+	getMove(potential_destinations, -1, -2);
+	getMove(potential_destinations, 1, 2);
+	getMove(potential_destinations, 1, -2);
+	getMove(potential_destinations, 2, 1);
+	getMove(potential_destinations, 2, -1);
+	return potential_destinations;
+}
+
+std::vector<Position> Knight::getPathTo(const Position& destination)
+{
+	std::vector<Position> path;
+	path.push_back(destination);
 	return path;
 }

@@ -10,6 +10,6 @@ public:
 	Rook(const team side, const std::string& position);
 	~Rook() override = default;
 
-	std::vector<std::string> getPotentialDestinations() override;
-	virtual std::vector<std::string> getPathTo(std::string position, const std::string& destination) override;
+	std::vector<Position> getPotentialDestinations() override;
+	virtual std::vector<Position> getPathTo(const Position& destination) override;
 };
