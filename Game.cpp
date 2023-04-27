@@ -56,14 +56,16 @@ void Game::updatePiecesPositions()
 	_board.getAllPiecesPosition().clear();
 	for (const auto& piece : _pieces)
 	{
-		_board.setPiecePosition(piece->getPosition(), piece);
+		Position position = piece->getPosition();
+		_board.setPiecePosition(position, piece);
 	}
+	_board.updateMoveMarkers();
 }
 
 Position Game::getClickedPiecePosition() const
 {
-	const char column_char = _mouse_position.x / 100 + 65;
-	const char row_char = 57 - _mouse_position.y / 100;
+	char column_char = _mouse_position.x / 100 + 65;
+	char row_char = 57 - _mouse_position.y / 100;
 	const Position position(column_char, row_char);
 	return position;
 }

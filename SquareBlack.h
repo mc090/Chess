@@ -9,5 +9,4 @@ public:
 
 	void setDefaultColor() override;
 	void setPositionColor() override;
-	void setAvaliableMoveColor() override;
 };

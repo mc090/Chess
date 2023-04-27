@@ -47,8 +47,6 @@ Square* Board::operator[](const Position& key)
 	return _board[key];
 }
 
-
-
 std::map<Position, Piece*>& Board::getAllPiecesPosition()
 {
 	return _pieces_position;
@@ -59,6 +57,21 @@ void Board::setPiecePosition(const Position& position, Piece* piece)
 	_pieces_position[position] = piece;
 }
 
+void Board::updateMoveMarkers()
+{
+	for(const auto& square:_board)
+	{
+		Position position = square.first;
+		if(_pieces_position[position])
+		{
+			square.second->setIsOccupied(true);
+		}
+		else
+		{
+			square.second->setIsOccupied(false);
+		}
+	}
+}
 
 
 void Board::hardColorReset() const

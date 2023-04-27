@@ -16,7 +16,7 @@ Knight::Knight(const team side, const std::string& position) :Piece(side, positi
 }
 
 
-void Knight::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j)
+void Knight::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j) const
 {
 	const char column = _position.getColumn() + i;
 	const char row = _position.getRow() + j;

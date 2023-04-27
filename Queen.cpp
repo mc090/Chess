@@ -16,66 +16,37 @@ Queen::Queen(const team side,const std::string& position) :Piece(side,position)
 }
 
 
+void Queen::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j) const
+{
+	char column = _position.getColumn();
+	char row = _position.getRow();
+	do
+	{
+		column += i;
+		row += j;
+		if (column < 'A' or column > 'H' or row < '1' or row > '8')
+		{
+			const Position position(column - i, row - j);
+			if (position.get() != _position.get())
+			{
+				potential_destinations.push_back(position);
+			}
+			break;
+		}
+	} while (true);
+}
+
 std::vector<Position> Queen::getPotentialDestinations()
 {
 	std::vector<Position> potential_destinations;
-	for (int i = -1; i < 2; i += 2)
-	{
-		char column = _position.getColumn();
-		char row = _position.getRow();
-		do
-		{
-			column += i;
-			if (column < 'A' or column > 'H')
-			{
-				const Position position(column - i, row);
-				if (position.get() != _position.get())
-				{
-					potential_destinations.push_back(position);
-				}
-				break;
-			}
-
-		} while (true);
-		column = _position.getColumn();
-		do
-		{
-
-			row += i;
-			if (row < '1' or row > '8')
-			{
-				const Position position(column, row - i);
-				if (position.get() != _position.get())
-				{
-					potential_destinations.push_back(position);
-				}
-				break;
-			}
-
-		} while (true);
-	}
-	for (int i = -1; i < 2; i += 2)
-	{
-		for (int j = -1; j < 2; j += 2)
-		{
-			char column = _position.getColumn();
-			char row = _position.getRow();
-			do
-			{
-				column += i;
-				row += j;
-				if (column < 'A' or column > 'H' or row < '1' or row > '8')
-				{
-					const Position position(column - i, row - j);
-					if (position.get() != _position.get())
-					{
-						potential_destinations.push_back(position);
-					}
-					break;
-				}
-			} while (true);
-		}
-	}
+	getMove(potential_destinations, -1, -1);
+	getMove(potential_destinations, -1, 0);
+	getMove(potential_destinations, 0, -1);
+	getMove(potential_destinations, -1, 1);
+	getMove(potential_destinations, 1, -1);
+	getMove(potential_destinations, 0, 1);
+	getMove(potential_destinations, 1, 0);
+	getMove(potential_destinations, 1, 1);
 	return potential_destinations;
 }
 
