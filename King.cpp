@@ -16,52 +16,31 @@ King::King(const team side, const std::string& position) :Piece(side, position)
 }
 
 
+void King::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j) const
+{
+	const char column = _position.getColumn() + i;
+	const char row = _position.getRow() + j;
+	if (column > '@' and column < 'I' and row > '0' and row < '9')
+	{
+		const Position position(column, row);
+		if (position.get() != _position.get())
+		{
+			potential_destinations.push_back(position);
+		}
+	}
+}
 
 std::vector<Position> King::getPotentialDestinations()
 {
 	std::vector<Position> potential_destinations;
-	for (int i = -1; i < 2; i += 2)
-	{
-		char column = _position.getColumn();
-		char row = _position.getRow();
-		column += i;
-		if (column < 'I' and column > '@')
-		{
-			const Position position(column, row);
-			if (position.get() != _position.get())
-			{
-				potential_destinations.push_back(position);
-			}
-		}
-		column = _position.getColumn();
-		row += i;
-		if (row < '9' and row > '0')
-		{
-			const Position position(column, row);
-			if (position.get() != _position.get())
-			{
-				potential_destinations.push_back(position);
-			}
-		}
-	}
-	for (int i = -1; i < 2; i += 2)
-	{
-		for (int j = -1; j < 2; j += 2)
-		{
-			char column = _position.getColumn();
-			char row = _position.getRow();
-			column += i;
-			row += j;
-			if (column < 'I' and column > '@' and row < '9' and row > '0')
-			{
-				const Position position(column, row);
-				if (position.get() != _position.get())
-				{
-					potential_destinations.push_back(position);
-				}
-			}
-		}
-	}
+	getMove(potential_destinations, -1, -1);
+	getMove(potential_destinations, -1, 0);
+	getMove(potential_destinations, 0, -1);
+	getMove(potential_destinations, -1, 1);
+	getMove(potential_destinations, 1, -1);
+	getMove(potential_destinations, 0, 1);
+	getMove(potential_destinations, 1, 0);
+	getMove(potential_destinations, 1, 1);
 	return potential_destinations;
 }
 

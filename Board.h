@@ -17,6 +17,9 @@ class Board
 
 	void initializeBoard();
 
+	void hardColorReset() const;
+	void softColorReset() const;
+
 	void deleteBoard();
 
 public:
@@ -28,8 +31,7 @@ public:
 	std::map<Position, Piece*>& getAllPiecesPosition();
 	void setPiecePosition(const Position& position, Piece* piece);
 
-	void hardColorReset() const;
-	void softColorReset() const;
+	void updateMoveMarkers();
 
 	void getMove(const Position& position);
 	void showAvailableMoves(const Position& piece_position);

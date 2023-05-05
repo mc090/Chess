@@ -2,7 +2,7 @@
 
 #include "Piece.h"
 
-class Knight : public Piece
+class Knight final : public Piece
 {
 	void initializeTexture();
 

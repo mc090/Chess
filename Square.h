@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Position.h"
+#include "MoveMarker.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -10,8 +11,10 @@
 class Square
 {
 	Position _position;
+	MoveMarker* circle;
 	bool _is_selected;
 	bool _is_en_passant_possible;
+	bool _is_occupied;
 
 	void initializeSprite();
 
@@ -25,9 +28,12 @@ public:
 	virtual void setDefaultColor();
 	virtual void setPositionColor();
 	virtual void setAvaliableMoveColor();
+	void setIsOccupied(bool is_occupied);
+	bool getIsOccupied();
 	bool getIsSelected() const;
 	bool getIsEnPassantPossible() const;
 
 	void draw(sf::RenderWindow* window) const;
+	void drawMoveMarker(sf::RenderWindow* window) const;
 };
 
