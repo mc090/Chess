@@ -2,9 +2,12 @@
 
 void Game::initializeWindow()
 {
+	sf::Image icon;
+	icon.loadFromFile("Textures/icon.png");
 	_video_mode.width = 1200;
 	_video_mode.height = 800;
 	_window = new sf::RenderWindow(sf::VideoMode(_video_mode), "Chess", sf::Style::Titlebar | sf::Style::Close);
+	_window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 	_window->setFramerateLimit(60);
 }
 

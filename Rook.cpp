@@ -3,8 +3,8 @@
 void Rook::initializeTexture()
 {
 	const std::string team = _side ? "Black" : "White";
-	this->_texture.loadFromFile("Textures/" + team + "Rook.png");
-	this->_sprite.setTexture(this->_texture);
+	_texture.loadFromFile("Textures/" + team + "Rook.png");
+	_sprite.setTexture(_texture);
 }
 
 
