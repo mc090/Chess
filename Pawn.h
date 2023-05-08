@@ -16,5 +16,5 @@ public:
 	void setIsStartingPosition(const bool is_starting_position);
 
 	std::vector<Position> getPotentialDestinations() override;
-	std::vector<Position> getPathTo(const Position& destination) override;
+	std::vector<Position> setPathTo(const Position& destination) override;
 };

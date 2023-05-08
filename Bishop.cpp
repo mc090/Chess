@@ -46,7 +46,7 @@ std::vector<Position> Bishop::getPotentialDestinations()
 	return potential_destinations;
 }
 
-std::vector<Position> Bishop::getPathTo(const Position& destination)
+std::vector<Position> Bishop::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	char column = _position.getColumn();

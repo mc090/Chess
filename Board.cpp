@@ -30,7 +30,7 @@ void Board::deleteBoard()
 
 
 
-Board::Board() : _chosen_piece(nullptr), _en_passant(false)
+Board::Board() : _black_king(nullptr), _white_king(nullptr), _chosen_piece(nullptr), _en_passant(false)
 {
 	initializeBoard();
 }
@@ -59,10 +59,10 @@ void Board::setPiecePosition(const Position& position, Piece* piece)
 
 void Board::updateMoveMarkers()
 {
-	for(const auto& square:_board)
+	for (const auto& square : _board)
 	{
 		Position position = square.first;
-		if(_pieces_position[position])
+		if (_pieces_position[position])
 		{
 			square.second->setIsOccupied(true);
 		}
@@ -73,6 +73,38 @@ void Board::updateMoveMarkers()
 	}
 }
 
+void Board::checkForCheck()
+{
+	for (auto position : _black_avaliable_moves)
+	{
+		if (position.get() == _white_king->getPosition().get())
+		{
+			_board[position]->setCheckColor();
+		}
+	}
+	for (auto position : _white_avaliable_moves)
+	{
+		if (position.get() == _black_king->getPosition().get())
+		{
+			_board[position]->setCheckColor();
+		}
+	}
+}
+
+void Board::setBlackAvaliableMoves(const std::set<Position>& moves)
+{
+	_black_avaliable_moves = moves;
+}
+
+void Board::setWhiteAvaliableMoves(const std::set<Position>& moves)
+{
+	_white_avaliable_moves = moves;
+}
+
+void Board::setBlackKing(King* king)
+{
+	_black_king = king;
+}
 
 void Board::hardColorReset() const
 {
@@ -86,40 +118,50 @@ void Board::softColorReset() const
 	for (const auto& square : _board) {
 		if (square.second->getIsSelected())
 		{
-			square.second->setDefaultColor();
+			square.second->reset();
 		}
 	}
 }
 
+void Board::setWhiteKing(King* king)
+{
+	_white_king = king;
+}
 
 void Board::getMove(const Position& position)
 {
 	softColorReset();
 	if (_pieces_position[position] and !_pieces_position[position]->isToDelete()) {
 		_chosen_piece = _pieces_position[position];
-		showAvailableMoves(position);
-	}
-}
-
-void Board::showAvailableMoves(const Position& piece_position)
-{
-	const std::vector<Position> potential_destinations = _chosen_piece->getPotentialDestinations();
-	for (auto& potential_destination : potential_destinations)
-	{
-		const std::vector<Position> checked_positions = getAvaliableMoves(potential_destination);
-		for (auto& position : checked_positions)
+		for (auto& pos : _chosen_piece->getAvailableMoves())
 		{
-			_board[position]->setAvaliableMoveColor();
+			_board[pos]->setAvaliableMoveColor();
 		}
 	}
 }
 
-std::vector<Position> Board::getAvaliableMoves(const Position& destination)
+void Board::setAvailableMoves(Piece* piece)
 {
-	std::vector<Position> positions;
+	_chosen_piece = piece;
+	const std::vector<Position> potential_destinations = _chosen_piece->getPotentialDestinations();
+	std::vector<Position> moves;
+	for (auto& potential_destination : potential_destinations)
+	{
+		const std::vector<Position> checked_positions = getMovesTowardsDestination(potential_destination);
+		for (auto& position : checked_positions)
+		{
+			moves.push_back(position);
+		}
+	}
+	piece->setAvaliableMoves(moves);
+}
+
+std::vector<Position> Board::getMovesTowardsDestination(const Position& destination)
+{
+	std::vector<Position> moves;
 	const Position piece_position = _chosen_piece->getPosition();
 	const team piece_side = _chosen_piece->getSide();
-	const std::vector<Position> path = _chosen_piece->getPathTo(destination);
+	const std::vector<Position> path = _chosen_piece->setPathTo(destination);
 	if (!dynamic_cast<Pawn*>(_chosen_piece))
 	{
 		for (auto& position : path)
@@ -128,13 +170,13 @@ std::vector<Position> Board::getAvaliableMoves(const Position& destination)
 			{
 				if (_pieces_position[position]->getSide() != piece_side)
 				{
-					positions.push_back(position);
+					moves.push_back(position);
 				}
-				return positions;
+				return moves;
 			}
 			else
 			{
-				positions.push_back(position);
+				moves.push_back(position);
 			}
 		}
 	}
@@ -148,20 +190,20 @@ std::vector<Position> Board::getAvaliableMoves(const Position& destination)
 				if ((_pieces_position[position] and _pieces_position[position]->getSide() != piece_side)
 					or enPassant(position))
 				{
-					positions.push_back(position);
+					moves.push_back(position);
 				}
 			}
 			else
 			{
 				if (_pieces_position[position])
 				{
-					return positions;
+					return moves;
 				}
-				positions.push_back(position);
+				moves.push_back(position);
 			}
 		}
 	}
-	return positions;
+	return moves;
 }
 
 void Board::makeMove(const Position& position, int& taken_black, int& taken_white)
@@ -177,7 +219,7 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 	{
 		if (_en_passant)
 		{
-			int i = _chosen_piece->getSide() ? 1 : -1;
+			const int i = _chosen_piece->getSide() ? 1 : -1;
 			const Position pawn_position(position.getColumn(), char(position.getRow() + i));
 			if (_pieces_position[pawn_position])
 			{
@@ -185,7 +227,7 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 			}
 			_en_passant = false;
 		}
-		Pawn* pawn = dynamic_cast<Pawn*>(_chosen_piece);
+		auto* pawn = dynamic_cast<Pawn*>(_chosen_piece);
 		pawn->setIsStartingPosition(false);
 	}
 	_chosen_piece->setPosition(position);

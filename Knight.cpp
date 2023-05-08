@@ -40,7 +40,7 @@ std::vector<Position> Knight::getPotentialDestinations()
 	return potential_destinations;
 }
 
-std::vector<Position> Knight::getPathTo(const Position& destination)
+std::vector<Position> Knight::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	path.push_back(destination);

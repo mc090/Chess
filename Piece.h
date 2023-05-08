@@ -4,6 +4,7 @@
 #include "Position.h"
 
 #include <iostream>
+#include <vector>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -18,6 +19,7 @@ protected:
 	sf::Sprite _sprite;
 	team _side;
 	Position _position;
+	std::vector<Position> _available_moves;
 
 	void initializePosition();
 
@@ -32,7 +34,9 @@ public:
 	bool isToDelete() const;
 
 	virtual std::vector<Position> getPotentialDestinations() = 0;
-	virtual std::vector<Position> getPathTo(const Position& destination) = 0;
+	virtual std::vector<Position> setPathTo(const Position& destination) = 0;
+	std::vector<Position> getAvailableMoves();
+	void setAvaliableMoves(const std::vector<Position>& moves);
 
 	void draw(sf::RenderWindow* window) const;
 };

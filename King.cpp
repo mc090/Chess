@@ -44,7 +44,7 @@ std::vector<Position> King::getPotentialDestinations()
 	return potential_destinations;
 }
 
-std::vector<Position> King::getPathTo(const Position& destination)
+std::vector<Position> King::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	path.push_back(destination);

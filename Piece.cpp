@@ -49,6 +49,16 @@ bool Piece::isToDelete() const
 	return _side == taken ? true : false;
 }
 
+std::vector<Position> Piece::getAvailableMoves()
+{
+	return _available_moves;
+}
+
+void Piece::setAvaliableMoves(const std::vector<Position>& moves)
+{
+	_available_moves = moves;
+}
+
 void Piece::draw(sf::RenderWindow* window) const
 {
 	window->draw(_sprite);

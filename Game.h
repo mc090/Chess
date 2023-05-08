@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <vector>
-
+#include <set>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -34,7 +34,10 @@ class Game
 	void deletePieces();
 
 	void updatePiecesPositions();
+	void updateAvailableMoves();
 	Position getClickedPiecePosition() const;
+
+	void getAllAvaliableMoves();
 
 public:
 	Game();

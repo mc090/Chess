@@ -50,7 +50,7 @@ std::vector<Position> Queen::getPotentialDestinations()
 	return potential_destinations;
 }
 
-std::vector<Position> Queen::getPathTo(const Position& destination)
+std::vector<Position> Queen::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	char column = _position.getColumn();

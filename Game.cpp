@@ -13,11 +13,13 @@ void Game::initializeWindow()
 
 void Game::initializePieces()
 {
+	auto* black_king = new King(black, "E8");
+	auto* white_king = new King(white, "E1");
 	_pieces.push_back(new Rook(black, "A8"));
 	_pieces.push_back(new Knight(black, "B8"));
 	_pieces.push_back(new Bishop(black, "C8"));
 	_pieces.push_back(new Queen(black, "D8"));
-	_pieces.push_back(new King(black, "E8"));
+	_pieces.push_back(black_king);
 	_pieces.push_back(new Bishop(black, "F8"));
 	_pieces.push_back(new Knight(black, "G8"));
 	_pieces.push_back(new Rook(black, "H8"));
@@ -31,7 +33,7 @@ void Game::initializePieces()
 	_pieces.push_back(new Knight(white, "B1"));
 	_pieces.push_back(new Bishop(white, "C1"));
 	_pieces.push_back(new Queen(white, "D1"));
-	_pieces.push_back(new King(white, "E1"));
+	_pieces.push_back(white_king);
 	_pieces.push_back(new Bishop(white, "F1"));
 	_pieces.push_back(new Knight(white, "G1"));
 	_pieces.push_back(new Rook(white, "H1"));
@@ -41,6 +43,8 @@ void Game::initializePieces()
 		position += '2';
 		_pieces.push_back(new Pawn(white, position));
 	}
+	_board.setBlackKing(black_king);
+	_board.setWhiteKing(white_king);
 }
 
 void Game::deletePieces()
@@ -65,6 +69,17 @@ void Game::updatePiecesPositions()
 	_board.updateMoveMarkers();
 }
 
+void Game::updateAvailableMoves()
+{
+	for (const auto& piece : _pieces)
+	{
+		if (piece->getSide() != taken)
+		{
+			_board.setAvailableMoves(piece);
+		}
+	}
+}
+
 Position Game::getClickedPiecePosition() const
 {
 	char column_char = _mouse_position.x / 100 + 65;
@@ -73,12 +88,38 @@ Position Game::getClickedPiecePosition() const
 	return position;
 }
 
+void Game::getAllAvaliableMoves()
+{
+	std::set<Position> black_moves;
+	std::set<Position> white_moves;
+	for (auto* piece : _pieces)
+	{
+		if (piece->getSide() == black)
+		{
+			for (auto position : piece->getAvailableMoves())
+			{
+				black_moves.insert(position);
+			}
+		}
+		else if (piece->getSide() == white)
+		{
+			for (auto position : piece->getAvailableMoves())
+			{
+				white_moves.insert(position);
+			}
+		}
+	}
+	_board.setBlackAvaliableMoves(black_moves);
+	_board.setWhiteAvaliableMoves(white_moves);
+}
+
 
 Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0)
 {
 	initializeWindow();
 	initializePieces();
 	updatePiecesPositions();
+	updateAvailableMoves();
 }
 
 Game::~Game()
@@ -120,8 +161,12 @@ void Game::pollEvents()
 					else
 					{
 						_board.makeMove(position, _taken_black, _taken_white);
+						updatePiecesPositions();
+						updateAvailableMoves();
+						//w innym watku
+						getAllAvaliableMoves();
+						_board.checkForCheck();
 					}
-					updatePiecesPositions();
 				}
 			break;
 		}

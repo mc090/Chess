@@ -8,7 +8,7 @@ void Square::initializeSprite()
 
 
 
-Square::Square(const Position& position) :_position(position), circle(nullptr),
+Square::Square(const Position& position) :_position(position), _circle(nullptr),
 _is_selected(false), _is_en_passant_possible(false), _is_occupied(false)
 {
 	initializeSprite();
@@ -16,10 +16,15 @@ _is_selected(false), _is_en_passant_possible(false), _is_occupied(false)
 
 void Square::setDefaultColor()
 {
+	reset();
+}
+
+void Square::reset()
+{
 	_is_selected = false;
 	_is_en_passant_possible = false;
-	delete circle;
-	circle = nullptr;
+	delete _circle;
+	_circle = nullptr;
 }
 
 void Square::setPositionColor()
@@ -30,16 +35,21 @@ void Square::setPositionColor()
 void Square::setAvaliableMoveColor()
 {
 	_is_selected = true;
-	circle = new MoveMarker(_position.getColumn() - 'A', '8' - _position.getRow(),
+	_circle = new MoveMarker(_position.getColumn() - 'A', '8' - _position.getRow(),
 		_is_occupied ? 50.f : 20.f);
 }
 
-void Square::setIsOccupied(bool is_occupied)
+void Square::setCheckColor()
+{
+	_sprite.setFillColor(sf::Color::Red);
+}
+
+void Square::setIsOccupied(const bool is_occupied)
 {
 	_is_occupied = is_occupied;
 }
 
-bool Square::getIsOccupied()
+bool Square::getIsOccupied() const
 {
 	return _is_occupied;
 }
@@ -57,8 +67,8 @@ bool Square::getIsEnPassantPossible() const
 void Square::draw(sf::RenderWindow* window) const
 {
 	window->draw(_sprite);
-	if (circle)
+	if (_circle)
 	{
-		circle->draw(window);
+		_circle->draw(window);
 	}
 }

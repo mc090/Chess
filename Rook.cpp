@@ -46,7 +46,7 @@ std::vector<Position> Rook::getPotentialDestinations()
 	return potential_destinations;
 }
 
-std::vector<Position> Rook::getPathTo(const Position& destination)
+std::vector<Position> Rook::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	char column = _position.getColumn();

@@ -12,5 +12,5 @@ public:
 
 	void getMove(std::vector<Position>& potential_destinations, const int& i, const int& j) const;
 	std::vector<Position> getPotentialDestinations() override;
-	std::vector<Position> getPathTo(const Position& destination) override;
+	std::vector<Position> setPathTo(const Position& destination) override;
 };

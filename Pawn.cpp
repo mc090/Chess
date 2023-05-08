@@ -57,7 +57,7 @@ std::vector<Position> Pawn::getPotentialDestinations()
 	return potential_moves;
 }
 
-std::vector<Position> Pawn::getPathTo(const Position& destination)
+std::vector<Position> Pawn::setPathTo(const Position& destination)
 {
 	std::vector<Position> path;
 	const char column = _position.getColumn();
