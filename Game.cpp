@@ -55,32 +55,7 @@ void Game::deletePieces()
 	_pieces.clear();
 }
 
-
-
-
-void Game::updatePiecesPositions()
-{
-	_board.getAllPiecesPosition().clear();
-	for (const auto& piece : _pieces)
-	{
-		Position position = piece->getPosition();
-		_board.setPiecePosition(position, piece);
-	}
-	_board.updateMoveMarkers();
-}
-
-void Game::updateAvailableMoves()
-{
-	for (const auto& piece : _pieces)
-	{
-		if (piece->getSide() != taken)
-		{
-			_board.setAvailableMoves(piece);
-		}
-	}
-}
-
-Position Game::getClickedPiecePosition() const
+Position Game::getClickedPosition() const
 {
 	char column_char = _mouse_position.x / 100 + 65;
 	char row_char = 57 - _mouse_position.y / 100;
@@ -88,37 +63,13 @@ Position Game::getClickedPiecePosition() const
 	return position;
 }
 
-void Game::getAllAvaliableMoves()
-{
-	std::set<Position> black_moves;
-	std::set<Position> white_moves;
-	for (auto* piece : _pieces)
-	{
-		if (piece->getSide() == black)
-		{
-			for (auto position : piece->getAvailableMoves())
-			{
-				black_moves.insert(position);
-			}
-		}
-		else if (piece->getSide() == white)
-		{
-			for (auto position : piece->getAvailableMoves())
-			{
-				white_moves.insert(position);
-			}
-		}
-	}
-	_board.setBlackAvaliableMoves(black_moves);
-	_board.setWhiteAvaliableMoves(white_moves);
-}
 
-
-Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0)
+Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0), _turn(white), _selected_piece_position("SS")
 {
 	initializeWindow();
 	initializePieces();
-	updatePiecesPositions();
+	_board.setPiecesVector(_pieces);
+	_board.updatePiecesPositions();
 	updateAvailableMoves();
 }
 
@@ -135,7 +86,16 @@ bool Game::getWindowIsOpen() const
 	return _window->isOpen();
 }
 
-
+void Game::updateAvailableMoves()
+{
+	for (const auto& piece : _pieces)
+	{
+		if (piece->getSide() != taken)
+		{
+			_board.setAvailableMoves(piece);
+		}
+	}
+}
 
 void Game::pollEvents()
 {
@@ -148,26 +108,37 @@ void Game::pollEvents()
 
 		case sf::Event::KeyPressed:
 			if (_event.key.code == sf::Keyboard::Escape)
+			{
 				_window->close();
+			}
 			break;
 		case sf::Event::MouseButtonPressed:
 			if (_event.mouseButton.button == sf::Mouse::Left)
-				if (_mouse_position.x >= 0 and _mouse_position.x < 800 and _mouse_position.y >= 0 and _mouse_position.y < 800) {
-					Position position = getClickedPiecePosition();
+			{
+				if (_mouse_position.x >= 0 && _mouse_position.x < 800 && _mouse_position.y >= 0 && _mouse_position.y < 800) {
+					Position position = getClickedPosition();
 					if (!_board[position]->getIsSelected())
 					{
-						_board.getMove(position);
+						if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
+						{
+							_selected_piece_position = position;
+							_board.predictCheck(_selected_piece_position);
+							_board.getMove(_selected_piece_position);
+						}
 					}
 					else
 					{
-						_board.makeMove(position, _taken_black, _taken_white);
-						updatePiecesPositions();
-						updateAvailableMoves();
-						//w innym watku
-						getAllAvaliableMoves();
-						_board.checkForCheck();
+						if (_selected_piece_position.get() != "TS")
+						{
+							_board.makeMove(position, _taken_black, _taken_white);
+							_board.update();
+							_board.checkForCheck();
+							_turn = _turn ? white : black;
+							_selected_piece_position.set("TS");
+						}
 					}
 				}
+			}
 			break;
 		}
 	}
@@ -189,7 +160,7 @@ void Game::render() const
 	_window->clear(sf::Color(49, 46, 43));
 
 	_board.draw(_window);
-	for (auto piece : _pieces) {
+	for (const auto piece : _pieces) {
 		piece->draw(_window);
 	}
 

@@ -32,7 +32,7 @@ void Square::setPositionColor()
 	_is_en_passant_possible = true;
 }
 
-void Square::setAvaliableMoveColor()
+void Square::markAsAvaliableMove()
 {
 	_is_selected = true;
 	_circle = new MoveMarker(_position.getColumn() - 'A', '8' - _position.getRow(),

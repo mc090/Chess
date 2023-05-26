@@ -49,6 +49,11 @@ bool Piece::isToDelete() const
 	return _side == taken ? true : false;
 }
 
+void Piece::setSide(const team side)
+{
+	_side = side;
+}
+
 std::vector<Position> Piece::getAvailableMoves()
 {
 	return _available_moves;
@@ -57,6 +62,11 @@ std::vector<Position> Piece::getAvailableMoves()
 void Piece::setAvaliableMoves(const std::vector<Position>& moves)
 {
 	_available_moves = moves;
+}
+
+void Piece::clearAvaliableMoves()
+{
+	_available_moves.clear();
 }
 
 void Piece::draw(sf::RenderWindow* window) const

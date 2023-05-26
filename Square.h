@@ -28,7 +28,7 @@ public:
 	virtual void setDefaultColor();
 	void reset();
 	virtual void setPositionColor();
-	virtual void setAvaliableMoveColor();
+	virtual void markAsAvaliableMove();
 	void setCheckColor();
 	void setIsOccupied(bool is_occupied);
 	bool getIsOccupied() const;

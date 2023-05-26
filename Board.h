@@ -11,6 +11,7 @@
 class Board
 {
 	std::map<Position, Square*> _board;
+	std::vector<Piece*> _pieces;
 	std::map<Position, Piece*> _pieces_position;
 	std::set<Position> _white_avaliable_moves;
 	std::set<Position> _black_avaliable_moves;
@@ -25,11 +26,18 @@ class Board
 	void hardColorReset() const;
 	void softColorReset() const;
 
+	void getAllAvaliableMoves();
+	void updateAvailableMoves();
+
 	void deleteBoard();
 
 public:
 	Board();
 	~Board();
+
+	void update();
+	void updatePiecesPositions();
+	void setPiecesVector(const std::vector<Piece*>& pieces);
 
 	Square* operator[](const Position& key);
 
@@ -39,10 +47,9 @@ public:
 	void updateMoveMarkers();
 
 	void checkForCheck();
+	bool checkForCheck(team side);
+	void predictCheck(const Position& position);
 
-
-	void setBlackAvaliableMoves(const std::set<Position>& moves);
-	void setWhiteAvaliableMoves(const std::set<Position>& moves);
 	void setBlackKing(King* king);
 	void setWhiteKing(King* king);
 

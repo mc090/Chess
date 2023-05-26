@@ -28,16 +28,15 @@ class Game
 	Board _board;
 	int _taken_black;
 	int _taken_white;
+	team _turn;
+	Position _selected_piece_position;
 
 	void initializeWindow();
 	void initializePieces();
 	void deletePieces();
 
-	void updatePiecesPositions();
 	void updateAvailableMoves();
-	Position getClickedPiecePosition() const;
-
-	void getAllAvaliableMoves();
+	Position getClickedPosition() const;
 
 public:
 	Game();

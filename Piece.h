@@ -32,11 +32,13 @@ public:
 	void setPosition(const Position& position);
 	void setToDelete(int& taken_black, int& taken_white);
 	bool isToDelete() const;
+	void setSide(team side);
 
 	virtual std::vector<Position> getPotentialDestinations() = 0;
 	virtual std::vector<Position> setPathTo(const Position& destination) = 0;
 	std::vector<Position> getAvailableMoves();
 	void setAvaliableMoves(const std::vector<Position>& moves);
+	void clearAvaliableMoves();
 
 	void draw(sf::RenderWindow* window) const;
 };
