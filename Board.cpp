@@ -138,40 +138,40 @@ bool Board::checkForCheck(const team side)
 	return false;
 }
 
-void Board::predictCheck(const Position& position)
+std::vector<Position> Board::predictCheck(Piece* piece)
 {
-	Piece* piece = _pieces_position[position];
 	const team side = piece->getSide();
-	if (side != taken)
+	const Position current_position = piece->getPosition();
+	const std::vector<Position> moves = piece->getAvailableMoves();
+	std::vector<Position> valid_moves;
+	for (auto move : moves)
 	{
-		const Position current_position = piece->getPosition();
-		const std::vector<Position> moves = piece->getAvailableMoves();
-		std::vector<Position> valid_moves;
-		for (auto move : moves)
+		if (_pieces_position[move] && _pieces_position[move] != piece)
 		{
-			Piece* p = nullptr;
-			team pt;
-			if (_pieces_position[move])
-			{
-				p = _pieces_position[move];
-				pt = p->getSide();
-				p->setSide(taken);
-			}
+			Piece* p = _pieces_position[move];
+			const team t = p->getSide();
+			p->setSide(taken);
 			piece->setPosition(move);
 			update();
 			if (!checkForCheck(side))
 			{
 				valid_moves.push_back(move);
 			}
-			if (p != nullptr)
+			p->setSide(t);
+		}
+		else
+		{
+			piece->setPosition(move);
+			update();
+			if (!checkForCheck(side))
 			{
-				p->setSide(pt);
+				valid_moves.push_back(move);
 			}
 		}
-		piece->setPosition(current_position);
-		update();
-		piece->setAvaliableMoves(valid_moves);
 	}
+	piece->setPosition(current_position);
+	update();
+	return valid_moves;
 }
 
 void Board::getAllAvaliableMoves()
@@ -336,16 +336,16 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 	}
 	if (dynamic_cast<Pawn*>(_chosen_piece))
 	{
-		if (_en_passant)
-		{
-			const int i = _chosen_piece->getSide() ? 1 : -1;
-			const Position pawn_position(position.getColumn(), char(position.getRow() + i));
-			if (_pieces_position[pawn_position])
-			{
-				_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
-			}
-			_en_passant = false;
-		}
+		//if (_en_passant)
+		//{
+		//	const int i = _chosen_piece->getSide() ? 1 : -1;
+		//	const Position pawn_position(position.getColumn(), char(position.getRow() + i));
+		//	if (_pieces_position[pawn_position])
+		//	{
+		//		_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
+		//	}
+		//	_en_passant = false;
+		//}
 		auto* pawn = dynamic_cast<Pawn*>(_chosen_piece);
 		pawn->setIsStartingPosition(false);
 	}

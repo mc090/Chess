@@ -34,6 +34,7 @@ class Game
 	void initializeWindow();
 	void initializePieces();
 	void deletePieces();
+	void predictCheck();
 
 	void updateAvailableMoves();
 	Position getClickedPosition() const;

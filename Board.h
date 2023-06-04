@@ -48,7 +48,7 @@ public:
 
 	void checkForCheck();
 	bool checkForCheck(team side);
-	void predictCheck(const Position& position);
+	std::vector<Position> predictCheck(Piece* piece);
 
 	void setBlackKing(King* king);
 	void setWhiteKing(King* king);

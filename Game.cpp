@@ -55,6 +55,22 @@ void Game::deletePieces()
 	_pieces.clear();
 }
 
+void Game::predictCheck()
+{
+	std::map<Piece*, std::vector<Position>> valid_moves;
+	for (auto* piece : _pieces)
+	{
+		if (piece->getSide() != taken)
+		{
+			valid_moves[piece] = _board.predictCheck(piece);
+		}
+	}
+	for (auto move : valid_moves)
+	{
+		move.first->setAvaliableMoves(move.second);
+	}
+}
+
 Position Game::getClickedPosition() const
 {
 	char column_char = _mouse_position.x / 100 + 65;
@@ -122,7 +138,6 @@ void Game::pollEvents()
 						if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
 						{
 							_selected_piece_position = position;
-							_board.predictCheck(_selected_piece_position);
 							_board.getMove(_selected_piece_position);
 						}
 					}
@@ -131,8 +146,11 @@ void Game::pollEvents()
 						if (_selected_piece_position.get() != "TS")
 						{
 							_board.makeMove(position, _taken_black, _taken_white);
+							update();
+							render();
 							_board.update();
 							_board.checkForCheck();
+							predictCheck();
 							_turn = _turn ? white : black;
 							_selected_piece_position.set("TS");
 						}
