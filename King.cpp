@@ -30,6 +30,18 @@ void King::getMove(std::vector<Position>& potential_destinations, const int& i, 
 	}
 }
 
+void King::isCheck(const bool check)
+{
+	if (check)
+	{
+		_sprite.setColor(sf::Color::Red);
+	}
+	else
+	{
+		_sprite.setColor(sf::Color::White);
+	}
+}
+
 std::vector<Position> King::getPotentialDestinations()
 {
 	std::vector<Position> potential_destinations;

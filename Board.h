@@ -26,7 +26,7 @@ class Board
 	void hardColorReset() const;
 	void softColorReset() const;
 
-	void getAllAvaliableMoves();
+	bool checkForCheck();
 	void updateAvailableMoves();
 
 	void deleteBoard();
@@ -35,6 +35,7 @@ public:
 	Board();
 	~Board();
 
+	void getAllAvaliableMoves();
 	void update();
 	void updatePiecesPositions();
 	void setPiecesVector(const std::vector<Piece*>& pieces);
@@ -46,7 +47,6 @@ public:
 
 	void updateMoveMarkers();
 
-	void checkForCheck();
 	bool checkForCheck(team side);
 	std::vector<Position> predictCheck(Piece* piece);
 
@@ -61,4 +61,7 @@ public:
 	bool enPassant(const Position& position);
 
 	void draw(sf::RenderWindow* window) const;
+
+	void isCheckmateOrStalemate(team turn);
+	void isCheck() const;
 };

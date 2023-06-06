@@ -133,7 +133,7 @@ void Game::pollEvents()
 			{
 				if (_mouse_position.x >= 0 && _mouse_position.x < 800 && _mouse_position.y >= 0 && _mouse_position.y < 800) {
 					Position position = getClickedPosition();
-					if (!_board[position]->getIsSelected())
+					if (!_board[position]->getIsMovePossible())
 					{
 						if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
 						{
@@ -146,13 +146,12 @@ void Game::pollEvents()
 						if (_selected_piece_position.get() != "TS")
 						{
 							_board.makeMove(position, _taken_black, _taken_white);
-							update();
-							render();
 							_board.update();
-							_board.checkForCheck();
 							predictCheck();
 							_turn = _turn ? white : black;
 							_selected_piece_position.set("TS");
+							_board.isCheck();
+							_board.isCheckmateOrStalemate(_turn);
 						}
 					}
 				}

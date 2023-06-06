@@ -12,11 +12,16 @@ class Square
 {
 	Position _position;
 	MoveMarker* _circle;
+	bool _is_move_possible;
 	bool _is_selected;
 	bool _is_en_passant_possible;
 	bool _is_occupied;
 
 	void initializeSprite();
+
+	void reset();
+	void setSelectedColor();
+	void setCheckColor();
 
 protected:
 	sf::RectangleShape _sprite;
@@ -26,15 +31,15 @@ public:
 	virtual ~Square() = default;
 
 	virtual void setDefaultColor();
-	void reset();
 	virtual void setPositionColor();
 	virtual void markAsAvaliableMove();
-	void setCheckColor();
 	void setIsOccupied(bool is_occupied);
+	void setIsSelected(bool is_selected);
 	bool getIsOccupied() const;
 	bool getIsSelected() const;
+	bool getIsMovePossible() const;
 	bool getIsEnPassantPossible() const;
 
-	void draw(sf::RenderWindow* window) const;
+	void draw(sf::RenderWindow* window);
 };
 

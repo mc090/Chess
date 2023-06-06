@@ -94,22 +94,23 @@ void Board::updateMoveMarkers()
 	}
 }
 
-void Board::checkForCheck()
+bool Board::checkForCheck()
 {
 	for (auto position : _black_avaliable_moves)
 	{
 		if (position.get() == _white_king->getPosition().get())
 		{
-			_board[position]->setCheckColor();
+			return true;
 		}
 	}
 	for (auto position : _white_avaliable_moves)
 	{
 		if (position.get() == _black_king->getPosition().get())
 		{
-			_board[position]->setCheckColor();
+			return true;
 		}
 	}
+	return false;
 }
 
 
@@ -224,14 +225,16 @@ void Board::hardColorReset() const
 	for (const auto& square : _board) {
 		square.second->setDefaultColor();
 	}
+	_white_king->isCheck(false);
+	_black_king->isCheck(false);
 }
 
 void Board::softColorReset() const
 {
 	for (const auto& square : _board) {
-		if (square.second->getIsSelected())
+		if (square.second->getIsMovePossible() or square.second->getIsSelected())
 		{
-			square.second->reset();
+			square.second->setDefaultColor();
 		}
 	}
 }
@@ -244,6 +247,7 @@ void Board::setWhiteKing(King* king)
 void Board::getMove(const Position& position)
 {
 	softColorReset();
+	_board[position]->setIsSelected(true);
 	if (_pieces_position[position] and !_pieces_position[position]->isToDelete()) {
 		_chosen_piece = _pieces_position[position];
 		for (auto& pos : _chosen_piece->getAvailableMoves())
@@ -377,5 +381,40 @@ void Board::draw(sf::RenderWindow* window) const
 {
 	for (const auto& square : _board) {
 		square.second->draw(window);
+	}
+}
+
+void Board::isCheckmateOrStalemate(const team turn)
+{
+	getAllAvaliableMoves();
+	if (turn == black && _black_avaliable_moves.empty() ||
+		turn == white && _white_avaliable_moves.empty())
+	{
+		if (checkForCheck())
+		{
+			std::cout << "checkmate" << std::endl;
+		}
+		else
+		{
+			std::cout << "stalemate" << std::endl;
+		}
+	}
+}
+
+void Board::isCheck() const
+{
+	for (auto position : _black_avaliable_moves)
+	{
+		if (position.get() == _white_king->getPosition().get())
+		{
+			_white_king->isCheck(true);
+		}
+	}
+	for (auto position : _white_avaliable_moves)
+	{
+		if (position.get() == _black_king->getPosition().get())
+		{
+			_black_king->isCheck(true);
+		}
 	}
 }
