@@ -18,7 +18,6 @@ class Board
 	King* _black_king;
 	King* _white_king;
 	Piece* _chosen_piece;
-
 	bool _en_passant;
 
 	void initializeBoard();
@@ -58,10 +57,14 @@ public:
 	std::vector<Position> getMovesTowardsDestination(const Position& destination);
 	void makeMove(const Position& position, int& taken_black, int& taken_white);
 
-	bool enPassant(const Position& position);
+	bool checkForEnPassant(const Position& position);
+	void setEnPassant(const Position& old_position);
 
 	void draw(sf::RenderWindow* window) const;
 
 	void isCheckmateOrStalemate(team turn);
 	void isCheck() const;
+
+	//sprawdza czy na jakims polu dostepne jest en passant i jesli tak to je zwraca
+	Position enPassantPosition() const;
 };

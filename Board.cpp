@@ -310,8 +310,8 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 			if (position.getColumn() == piece_position.getColumn() + 1
 				or position.getColumn() == piece_position.getColumn() - 1)
 			{
-				if ((_pieces_position[position] and _pieces_position[position]->getSide() != piece_side)
-					or enPassant(position))
+				if ((_pieces_position[position] && _pieces_position[position]->getSide() != piece_side) ||
+					checkForEnPassant(position))
 				{
 					moves.push_back(position);
 				}
@@ -331,6 +331,7 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 
 void Board::makeMove(const Position& position, int& taken_black, int& taken_white)
 {
+	Position pos = enPassantPosition();
 	hardColorReset();
 	const Position old_position = _chosen_piece->getPosition();
 	_board[old_position]->setPositionColor();
@@ -340,40 +341,53 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 	}
 	if (dynamic_cast<Pawn*>(_chosen_piece))
 	{
-		//if (_en_passant)
-		//{
-		//	const int i = _chosen_piece->getSide() ? 1 : -1;
-		//	const Position pawn_position(position.getColumn(), char(position.getRow() + i));
-		//	if (_pieces_position[pawn_position])
-		//	{
-		//		_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
-		//	}
-		//	_en_passant = false;
-		//}
+		if (_en_passant)
+		{
+			const int i = _chosen_piece->getSide() ? 1 : -1;
+			const Position pawn_position(position.getColumn(), char(position.getRow() + i));
+			if (position.get() == pos.get() && _pieces_position[pawn_position])
+			{
+				_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
+			}
+			_en_passant = false;
+		}
 		auto* pawn = dynamic_cast<Pawn*>(_chosen_piece);
 		pawn->setIsStartingPosition(false);
+		_chosen_piece->setPosition(position);
+		_board[position]->setPositionColor();
+		setEnPassant(old_position);
 	}
-	_chosen_piece->setPosition(position);
-	_board[position]->setPositionColor();
+	else
+	{
+		_chosen_piece->setPosition(position);
+		_board[position]->setPositionColor();
+	}
 }
 
-bool Board::enPassant(const Position& position)
+bool Board::checkForEnPassant(const Position& position)
 {
 	if (_chosen_piece->getPosition().getRow() == '4' or _chosen_piece->getPosition().getRow() == '5')
 	{
 		const int i = _chosen_piece->getSide() ? -1 : 1;
-		const Position starting_pawn_position(position.getColumn(), char(position.getRow() - i));
-		const Position pawn_position(position.getColumn(), char(position.getRow() + i));
 
-		if (_board[pawn_position]->getIsEnPassantPossible()
-			and _board[starting_pawn_position]->getIsEnPassantPossible()
-			and dynamic_cast<Pawn*>(_pieces_position[starting_pawn_position]))
+		if (_board[position]->getIsEnPassantPossible())
 		{
 			_en_passant = true;
 			return true;
 		}
 	}
 	return false;
+}
+
+void Board::setEnPassant(const Position& old_position)
+{
+	if (old_position.getRow() == '2' && _chosen_piece->getPosition().getRow() == '4' ||
+		old_position.getRow() == '7' && _chosen_piece->getPosition().getRow() == '5')
+	{
+		const int i = _chosen_piece->getSide() ? -1 : 1;
+		const Position en_passant(old_position.getColumn(), char(old_position.getRow() + i));
+		_board[en_passant]->setIsEnPassantPossible(true);
+	}
 }
 
 
@@ -417,4 +431,15 @@ void Board::isCheck() const
 			_black_king->isCheck(true);
 		}
 	}
+}
+
+Position Board::enPassantPosition() const
+{
+	for (const auto& square : _board) {
+		if (square.second->getIsEnPassantPossible())
+		{
+			return square.first;
+		}
+	}
+	return Position("00");
 }

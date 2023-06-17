@@ -31,10 +31,11 @@ public:
 	virtual ~Square() = default;
 
 	virtual void setDefaultColor();
-	virtual void setPositionColor();
+	virtual void setPositionColor() = 0;
 	virtual void markAsAvaliableMove();
 	void setIsOccupied(bool is_occupied);
 	void setIsSelected(bool is_selected);
+	void setIsEnPassantPossible(bool is_en_passant_possible);
 	bool getIsOccupied() const;
 	bool getIsSelected() const;
 	bool getIsMovePossible() const;

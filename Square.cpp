@@ -28,11 +28,6 @@ void Square::reset()
 	_circle = nullptr;
 }
 
-void Square::setPositionColor()
-{
-	_is_en_passant_possible = true;
-}
-
 void Square::markAsAvaliableMove()
 {
 	_is_move_possible = true;
@@ -59,6 +54,11 @@ void Square::setIsSelected(const bool is_selected)
 {
 	_is_selected = is_selected;
 	setSelectedColor();
+}
+
+void Square::setIsEnPassantPossible(const bool is_en_passant_possible)
+{
+	_is_en_passant_possible = is_en_passant_possible;
 }
 
 bool Square::getIsOccupied() const
