@@ -5,6 +5,7 @@
 class King final : public Piece
 {
 	void initializeTexture();
+	void castling(std::vector<Position>& potential_destinations) const;
 
 public:
 	King(const team side, const std::string& position);

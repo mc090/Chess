@@ -60,7 +60,7 @@ void Game::predictCheck()
 	std::map<Piece*, std::vector<Position>> valid_moves;
 	for (auto* piece : _pieces)
 	{
-		if (piece->getSide() != taken)
+		if (piece->getSide() == _turn)
 		{
 			valid_moves[piece] = _board.predictCheck(piece);
 		}
@@ -147,8 +147,9 @@ void Game::pollEvents()
 						{
 							_board.makeMove(position, _taken_black, _taken_white);
 							_board.update();
-							predictCheck();
 							_turn = _turn ? white : black;
+							predictCheck();
+							_board.upateCastling(_turn);
 							_selected_piece_position.set("TS");
 							_board.isCheck();
 							_board.isCheckmateOrStalemate(_turn);

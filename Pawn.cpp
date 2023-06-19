@@ -9,24 +9,11 @@ void Pawn::initializeTexture()
 
 
 
-Pawn::Pawn(const team side, const std::string& position) :Piece(side, position), _is_starting_position(true)
+Pawn::Pawn(const team side, const std::string& position) :Piece(side, position)
 {
 	initializeTexture();
 	initializePosition();
 }
-
-
-void Pawn::setStartingPositionFalse()
-{
-	_is_starting_position = false;
-}
-
-
-void Pawn::setIsStartingPosition(const bool is_starting_position)
-{
-	_is_starting_position = is_starting_position;
-}
-
 
 
 std::vector<Position> Pawn::getPotentialDestinations()

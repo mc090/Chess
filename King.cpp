@@ -7,6 +7,23 @@ void King::initializeTexture()
 	this->_sprite.setTexture(this->_texture);
 }
 
+void King::castling(std::vector<Position>& potential_destinations) const 
+{
+	if (_side)
+	{
+		const Position first("C8");
+		const Position second("G8");
+		potential_destinations.push_back(first);
+		potential_destinations.push_back(second);
+	}
+	else
+	{
+		const Position first("C1");
+		const Position second("G1");
+		potential_destinations.push_back(first);
+		potential_destinations.push_back(second);
+	}
+}
 
 
 King::King(const team side, const std::string& position) :Piece(side, position)
@@ -32,14 +49,7 @@ void King::getMove(std::vector<Position>& potential_destinations, const int& i, 
 
 void King::isCheck(const bool check)
 {
-	if (check)
-	{
-		_sprite.setColor(sf::Color::Red);
-	}
-	else
-	{
-		_sprite.setColor(sf::Color::White);
-	}
+	check ? _sprite.setColor(sf::Color::Red) : _sprite.setColor(sf::Color::White);
 }
 
 std::vector<Position> King::getPotentialDestinations()
@@ -53,6 +63,10 @@ std::vector<Position> King::getPotentialDestinations()
 	getMove(potential_destinations, 0, 1);
 	getMove(potential_destinations, 1, 0);
 	getMove(potential_destinations, 1, 1);
+	if (_is_starting_position)
+	{
+		castling(potential_destinations);
+	}
 	return potential_destinations;
 }
 

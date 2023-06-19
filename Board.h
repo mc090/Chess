@@ -27,6 +27,7 @@ class Board
 
 	bool checkForCheck();
 	void updateAvailableMoves();
+	bool castling(const Position& position);
 
 	void deleteBoard();
 
@@ -67,4 +68,6 @@ public:
 
 	//sprawdza czy na jakims polu dostepne jest en passant i jesli tak to je zwraca
 	Position enPassantPosition() const;
+
+	void upateCastling(team turn);
 };

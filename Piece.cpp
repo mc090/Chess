@@ -8,7 +8,7 @@ void Piece::initializePosition()
 	_sprite.setPosition(x * 100.f, y * 100.f);
 }
 
-Piece::Piece(const team side, const std::string& position) :_side(side), _position(position)
+Piece::Piece(const team side, const std::string& position) :_side(side), _position(position), _is_starting_position(true)
 {
 }
 
@@ -20,6 +20,11 @@ Position Piece::getPosition() const
 team Piece::getSide() const
 {
 	return _side;
+}
+
+bool Piece::getIsStartingPosition() const
+{
+	return _is_starting_position;
 }
 
 void Piece::setPosition(const Position& position)
@@ -72,4 +77,9 @@ void Piece::clearAvaliableMoves()
 void Piece::draw(sf::RenderWindow* window) const
 {
 	window->draw(_sprite);
+}
+
+void Piece::setStartingPositionFalse()
+{
+	_is_starting_position = false;
 }

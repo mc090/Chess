@@ -181,10 +181,6 @@ void Board::getAllAvaliableMoves()
 	std::set<Position> white_moves;
 	for (const auto piece : _pieces)
 	{
-		if (piece->getPosition().get() == "H5")
-		{
-			auto sdsd = piece->getPosition();
-		}
 		if (piece->getSide() == black)
 		{
 			for (auto position : piece->getAvailableMoves())
@@ -213,6 +209,28 @@ void Board::updateAvailableMoves()
 			setAvailableMoves(piece);
 		}
 	}
+}
+
+bool Board::castling(const Position& position)
+{
+	const int i = position.getColumn() == 'C' ? -2 : 1;
+	const Position rook_position(char(position.getColumn() + i), position.getRow());
+	if (_pieces_position[rook_position])
+	{
+		const Piece* rook = _pieces_position[rook_position];
+		if (!rook->getIsStartingPosition())
+		{
+			return false;
+		}
+		const int j = position.getColumn() == 'C' ? 1 : -1;
+		const Position new_rook_position(char(position.getColumn() + j), position.getRow());
+		if (_pieces_position[new_rook_position] || _pieces_position[position])
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
 }
 
 void Board::setBlackKing(King* king)
@@ -250,9 +268,9 @@ void Board::getMove(const Position& position)
 	_board[position]->setIsSelected(true);
 	if (_pieces_position[position] and !_pieces_position[position]->isToDelete()) {
 		_chosen_piece = _pieces_position[position];
-		for (auto& pos : _chosen_piece->getAvailableMoves())
+		for (auto& move : _chosen_piece->getAvailableMoves())
 		{
-			_board[pos]->markAsAvaliableMove();
+			_board[move]->markAsAvaliableMove();
 		}
 	}
 }
@@ -279,27 +297,34 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 	const Position piece_position = _chosen_piece->getPosition();
 	const team piece_side = _chosen_piece->getSide();
 	const std::vector<Position> path = _chosen_piece->setPathTo(destination);
-	if (destination.get() == "E8")
-	{
-		destination.get();
-	}
 	if (!dynamic_cast<Pawn*>(_chosen_piece))
 	{
 		for (auto& position : path)
 		{
-			// czy na danym polu stoi jakas bierka
-			if (_pieces_position[position])
+			if (dynamic_cast<King*>(_chosen_piece) && _chosen_piece->getIsStartingPosition() &&
+				(position.get() == "C1" || position.get() == "G1" || position.get() == "C8" || position.get() == "G8"))
 			{
-				// czy ta bierka jest innego koloru
-				if (_pieces_position[position]->getSide() != piece_side)
+				if (castling(position))
 				{
 					moves.push_back(position);
 				}
-				return moves;
 			}
 			else
 			{
-				moves.push_back(position);
+				// czy na danym polu stoi jakas bierka
+				if (_pieces_position[position])
+				{
+					// czy ta bierka jest innego koloru
+					if (_pieces_position[position]->getSide() != piece_side)
+					{
+						moves.push_back(position);
+					}
+					return moves;
+				}
+				else
+				{
+					moves.push_back(position);
+				}
 			}
 		}
 	}
@@ -331,7 +356,7 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 
 void Board::makeMove(const Position& position, int& taken_black, int& taken_white)
 {
-	Position pos = enPassantPosition();
+	const Position en_passant = enPassantPosition();
 	hardColorReset();
 	const Position old_position = _chosen_piece->getPosition();
 	_board[old_position]->setPositionColor();
@@ -345,20 +370,31 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 		{
 			const int i = _chosen_piece->getSide() ? 1 : -1;
 			const Position pawn_position(position.getColumn(), char(position.getRow() + i));
-			if (position.get() == pos.get() && _pieces_position[pawn_position])
+			if (position.get() == en_passant.get() && _pieces_position[pawn_position])
 			{
 				_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
 			}
 			_en_passant = false;
 		}
-		auto* pawn = dynamic_cast<Pawn*>(_chosen_piece);
-		pawn->setIsStartingPosition(false);
+		_chosen_piece->setStartingPositionFalse();
 		_chosen_piece->setPosition(position);
 		_board[position]->setPositionColor();
 		setEnPassant(old_position);
 	}
 	else
 	{
+		if (dynamic_cast<King*>(_chosen_piece) && _chosen_piece->getIsStartingPosition() &&
+			(position.get() == "C1" || position.get() == "G1" || position.get() == "C8" || position.get() == "G8"))
+		{
+			const int i = position.getColumn() == 'C' ? -2 : 1;
+			const int j = position.getColumn() == 'C' ? 1 : -1;
+			const Position rook_position(char(position.getColumn() + i), position.getRow());
+			const Position new_rook_position(char(position.getColumn() + j), position.getRow());
+			Piece* rook = _pieces_position[rook_position];
+			rook->setStartingPositionFalse();
+			rook->setPosition(new_rook_position);
+		}
+		_chosen_piece->setStartingPositionFalse();
 		_chosen_piece->setPosition(position);
 		_board[position]->setPositionColor();
 	}
@@ -442,4 +478,43 @@ Position Board::enPassantPosition() const
 		}
 	}
 	return Position("00");
+}
+
+void Board::upateCastling(const team turn)
+{
+	//3. nie ma szacha
+	//4. pole przez ktore przejdzie krul nie jest atakowane
+	//5. po roszadzie krol nie bedzie pod szachem
+	King* king = turn ? _black_king : _white_king;
+	if (king->getIsStartingPosition())
+	{
+		const std::vector<Position> king_moves = king->getAvailableMoves();
+		std::vector<Position> valid_moves;
+		for (auto king_move : king_moves)
+		{
+			if (king_move.get() == "C1" || king_move.get() == "G1" || king_move.get() == "C8" || king_move.get() == "G8")
+			{
+				const int j = king_move.getColumn() == 'C' ? 1 : -1;
+				const Position new_rook_position(char(king_move.getColumn() + j), king_move.getRow());
+				bool temp = true;
+				for (auto opponents_move : (turn ? _white_avaliable_moves : _black_avaliable_moves))
+				{
+					if (opponents_move.get() == king->getPosition().get() ||
+						opponents_move.get() == new_rook_position.get() ||
+						opponents_move.get() == king_move.get())
+					{
+						temp = false;
+					}
+				}
+				if (temp)
+				{
+					valid_moves.push_back(king_move);
+				}
+			}
+			else {
+				valid_moves.push_back(king_move);
+			}
+		}
+		king->setAvaliableMoves(valid_moves);
+	}
 }

@@ -20,6 +20,7 @@ protected:
 	team _side;
 	Position _position;
 	std::vector<Position> _available_moves;
+	bool _is_starting_position;
 
 	void initializePosition();
 
@@ -29,6 +30,7 @@ public:
 
 	Position getPosition() const;
 	team getSide() const;
+	bool getIsStartingPosition() const;
 	void setPosition(const Position& position);
 	void setToDelete(int& taken_black, int& taken_white);
 	bool isToDelete() const;
@@ -41,5 +43,7 @@ public:
 	void clearAvaliableMoves();
 
 	void draw(sf::RenderWindow* window) const;
+
+	void setStartingPositionFalse();
 };
 
