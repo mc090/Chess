@@ -3,8 +3,8 @@
 void Queen::initializeTexture()
 {
 	const std::string team = _side ? "Black" : "White";
-	this->_texture.loadFromFile("Textures/" + team + "Queen.png");
-	this->_sprite.setTexture(this->_texture);
+	_texture.loadFromFile("Textures/" + team + "Queen.png");
+	_sprite.setTexture(_texture);
 }
 
 

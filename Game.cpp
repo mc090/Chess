@@ -1,5 +1,9 @@
 #include "Game.h"
 
+
+
+
+
 void Game::initializeWindow()
 {
 	sf::Image icon;
@@ -80,7 +84,9 @@ Position Game::getClickedPosition() const
 }
 
 
-Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0), _turn(white), _selected_piece_position("SS")
+Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0), _turn(white),
+_selected_piece_position("SS"), _pawn_promotion(nullptr), _chosen_piece(nullptr), _is_pawn_promotion(false),
+_game_result(nothing), _victory_screen(nullptr)
 {
 	initializeWindow();
 	initializePieces();
@@ -131,30 +137,85 @@ void Game::pollEvents()
 		case sf::Event::MouseButtonPressed:
 			if (_event.mouseButton.button == sf::Mouse::Left)
 			{
-				if (_mouse_position.x >= 0 && _mouse_position.x < 800 && _mouse_position.y >= 0 && _mouse_position.y < 800) {
-					Position position = getClickedPosition();
-					if (!_board[position]->getIsMovePossible())
+				if (!_game_result)
+				{
+					if (!_is_pawn_promotion)
 					{
-						if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
-						{
-							_selected_piece_position = position;
-							_board.getMove(_selected_piece_position);
+						if (_mouse_position.x >= 0 && _mouse_position.x < 800 &&
+							_mouse_position.y >= 0 && _mouse_position.y < 800) {
+							Position position = getClickedPosition();
+							if (!_board[position]->getIsMovePossible())
+							{
+								if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
+								{
+									_selected_piece_position = position;
+									_board.getMove(_selected_piece_position);
+								}
+							}
+							else
+							{
+								if (_selected_piece_position.get() != "TS")
+								{
+									_chosen_piece = _board.makeMove(position, _taken_black, _taken_white);
+									if (dynamic_cast<Pawn*>(_chosen_piece) &&
+										(_chosen_piece->getPosition().getRow() == '1' || _chosen_piece->getPosition().getRow() == '8'))
+									{
+										_pawn_promotion = new PawnPromotion(_turn);
+										_is_pawn_promotion = true;
+										break;
+									}
+									_board.update();
+									_turn = _turn ? white : black;
+									predictCheck();
+									_board.upateCastling(_turn);
+									_selected_piece_position.set("TS");
+									_board.isCheck();
+									const gameResult temp = _board.isCheckmateOrStalemate(_turn);
+									if (temp)
+									{
+										_victory_screen = new VictoryScreen(temp);
+										_game_result = temp;
+									}
+								}
+							}
 						}
+
 					}
 					else
 					{
-						if (_selected_piece_position.get() != "TS")
-						{
-							_board.makeMove(position, _taken_black, _taken_white);
+						if (_mouse_position.x > 150.f && _mouse_position.x < 650.f &&
+							_mouse_position.y > 337.5 && _mouse_position.y < 462.5) {
+							promotePawn();
+							_is_pawn_promotion = false;
+							delete _pawn_promotion;
 							_board.update();
 							_turn = _turn ? white : black;
 							predictCheck();
 							_board.upateCastling(_turn);
 							_selected_piece_position.set("TS");
 							_board.isCheck();
-							_board.isCheckmateOrStalemate(_turn);
+							const gameResult temp = _board.isCheckmateOrStalemate(_turn);
+							if (temp)
+							{
+								_victory_screen = new VictoryScreen(temp);
+								_game_result = temp;
+							}
 						}
 					}
+				}
+				else
+				{
+					deletePieces();
+					initializePieces();
+					_board.setPiecesVector(_pieces);
+					_board.updatePiecesPositions();
+					updateAvailableMoves();
+					_board.hardColorReset();
+					_turn = white;
+					_taken_black = 0;
+					_taken_white = 0;
+					_game_result = nothing;
+					delete _victory_screen;
 				}
 			}
 			break;
@@ -181,6 +242,48 @@ void Game::render() const
 	for (const auto piece : _pieces) {
 		piece->draw(_window);
 	}
-
+	if (_is_pawn_promotion)
+	{
+		_pawn_promotion->draw(_window);
+	}
+	if (_game_result)
+	{
+		_victory_screen->draw(_window);
+	}
 	_window->display();
+}
+
+void Game::promotePawn()
+{
+	Piece* new_piece;
+	if (_mouse_position.x < 275.f)
+	{
+		new_piece = new Queen(_chosen_piece->getSide(), _chosen_piece->getPosition().get());
+	}
+	else if (_mouse_position.x < 400.f)
+	{
+		new_piece = new Rook(_chosen_piece->getSide(), _chosen_piece->getPosition().get());
+	}
+	else if (_mouse_position.x < 525.f)
+	{
+		new_piece = new Knight(_chosen_piece->getSide(), _chosen_piece->getPosition().get());
+	}
+	else
+	{
+		new_piece = new Bishop(_chosen_piece->getSide(), _chosen_piece->getPosition().get());
+	}
+	auto it = _pieces.begin();
+	for (const auto* piece : _pieces)
+	{
+		if (piece->getPosition().get() == _chosen_piece->getPosition().get())
+		{
+			delete piece;
+			_pieces.erase(it);
+			break;
+		}
+		++it;
+	}
+	_pieces.push_back(new_piece);
+	_board.setPiecesVector(_pieces);
+	_board.setChosenPiece(new_piece);
 }

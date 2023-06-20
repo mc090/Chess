@@ -9,6 +9,8 @@
 #include "SquareBlack.h"
 #include "SquareWhite.h"
 #include "Board.h"
+#include "PawnPromotion.h"
+#include "VictoryScreen.h"
 
 #include <iostream>
 #include <vector>
@@ -30,6 +32,11 @@ class Game
 	int _taken_white;
 	team _turn;
 	Position _selected_piece_position;
+	PawnPromotion* _pawn_promotion;
+	Piece* _chosen_piece;
+	bool _is_pawn_promotion;
+	gameResult _game_result;
+	VictoryScreen* _victory_screen;
 
 	void initializeWindow();
 	void initializePieces();
@@ -37,6 +44,7 @@ class Game
 	void predictCheck();
 	void updateAvailableMoves();
 	Position getClickedPosition() const;
+	void promotePawn();
 
 public:
 	Game();

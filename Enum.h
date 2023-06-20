@@ -2,6 +2,14 @@
 
 enum team {
 	taken = -1,
-	white = 0,
-	black,
+	white,
+	black
+};
+
+enum gameResult
+{
+	tie = -1,
+	nothing,
+	white_won,
+	black_won
 };

@@ -78,6 +78,11 @@ void Board::setPiecePosition(const Position& position, Piece* piece)
 	_pieces_position[position] = piece;
 }
 
+void Board::setChosenPiece(Piece* piece)
+{
+	_chosen_piece = piece;
+}
+
 void Board::updateMoveMarkers()
 {
 	for (const auto& square : _board)
@@ -354,7 +359,7 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 	return moves;
 }
 
-void Board::makeMove(const Position& position, int& taken_black, int& taken_white)
+Piece* Board::makeMove(const Position& position, int& taken_black, int& taken_white)
 {
 	const Position en_passant = enPassantPosition();
 	hardColorReset();
@@ -398,6 +403,7 @@ void Board::makeMove(const Position& position, int& taken_black, int& taken_whit
 		_chosen_piece->setPosition(position);
 		_board[position]->setPositionColor();
 	}
+	return _chosen_piece;
 }
 
 bool Board::checkForEnPassant(const Position& position)
@@ -434,7 +440,7 @@ void Board::draw(sf::RenderWindow* window) const
 	}
 }
 
-void Board::isCheckmateOrStalemate(const team turn)
+gameResult Board::isCheckmateOrStalemate(const team turn)
 {
 	getAllAvaliableMoves();
 	if (turn == black && _black_avaliable_moves.empty() ||
@@ -442,13 +448,14 @@ void Board::isCheckmateOrStalemate(const team turn)
 	{
 		if (checkForCheck())
 		{
-			std::cout << "checkmate" << std::endl;
+			return turn ? white_won : black_won;
 		}
 		else
 		{
-			std::cout << "stalemate" << std::endl;
+			return tie;
 		}
 	}
+	return nothing;
 }
 
 void Board::isCheck() const

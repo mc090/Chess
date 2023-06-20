@@ -22,7 +22,7 @@ class Board
 
 	void initializeBoard();
 
-	void hardColorReset() const;
+
 	void softColorReset() const;
 
 	bool checkForCheck();
@@ -44,6 +44,7 @@ public:
 
 	std::map<Position, Piece*>& getAllPiecesPosition();
 	void setPiecePosition(const Position& position, Piece* piece);
+	void setChosenPiece(Piece* piece);
 
 	void updateMoveMarkers();
 
@@ -56,18 +57,21 @@ public:
 	void getMove(const Position& position);
 	void setAvailableMoves(Piece* piece);
 	std::vector<Position> getMovesTowardsDestination(const Position& destination);
-	void makeMove(const Position& position, int& taken_black, int& taken_white);
+	Piece* makeMove(const Position& position, int& taken_black, int& taken_white);
 
 	bool checkForEnPassant(const Position& position);
 	void setEnPassant(const Position& old_position);
 
 	void draw(sf::RenderWindow* window) const;
 
-	void isCheckmateOrStalemate(team turn);
+	gameResult isCheckmateOrStalemate(team turn);
 	void isCheck() const;
 
 	//sprawdza czy na jakims polu dostepne jest en passant i jesli tak to je zwraca
 	Position enPassantPosition() const;
 
 	void upateCastling(team turn);
+
+	void hardColorReset() const;
+
 };
