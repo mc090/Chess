@@ -4,6 +4,7 @@
 #include "SquareWhite.h"
 #include "Piece.h"
 #include "King.h"
+#include "Clock.h"
 
 #include <map>
 
@@ -64,13 +65,13 @@ public:
 
 	void draw(sf::RenderWindow* window) const;
 
-	gameResult isCheckmateOrStalemate(team turn);
+	gameResult isGameFinished(team turn);
 	void isCheck() const;
 
 	//sprawdza czy na jakims polu dostepne jest en passant i jesli tak to je zwraca
 	Position enPassantPosition() const;
 
-	void upateCastling(team turn);
+	void upateCastling(team turn) const;
 
 	void hardColorReset() const;
 

@@ -13,5 +13,4 @@ class VictoryScreen
 public:
 	explicit VictoryScreen(const gameResult& game_result);
 	void draw(sf::RenderWindow* window) const;
-	
 };

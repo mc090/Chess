@@ -440,7 +440,7 @@ void Board::draw(sf::RenderWindow* window) const
 	}
 }
 
-gameResult Board::isCheckmateOrStalemate(const team turn)
+gameResult Board::isGameFinished(const team turn)
 {
 	getAllAvaliableMoves();
 	if (turn == black && _black_avaliable_moves.empty() ||
@@ -487,7 +487,7 @@ Position Board::enPassantPosition() const
 	return Position("00");
 }
 
-void Board::upateCastling(const team turn)
+void Board::upateCastling(const team turn) const
 {
 	//3. nie ma szacha
 	//4. pole przez ktore przejdzie krul nie jest atakowane

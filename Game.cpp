@@ -86,13 +86,15 @@ Position Game::getClickedPosition() const
 
 Game::Game() :_window(nullptr), _event(), _taken_black(0), _taken_white(0), _turn(white),
 _selected_piece_position("SS"), _pawn_promotion(nullptr), _chosen_piece(nullptr), _is_pawn_promotion(false),
-_game_result(nothing), _victory_screen(nullptr)
+_game_result(nothing), _victory_screen(nullptr), _is_game_started(false)
 {
 	initializeWindow();
 	initializePieces();
 	_board.setPiecesVector(_pieces);
 	_board.updatePiecesPositions();
 	updateAvailableMoves();
+	_black_clock = new Clock(sf::Vector2f(915.f, 315.f));
+	_white_clock = new Clock(sf::Vector2f(915.f, 415.f));
 }
 
 Game::~Game()
@@ -166,15 +168,25 @@ void Game::pollEvents()
 									}
 									_board.update();
 									_turn = _turn ? white : black;
+									if (!_is_game_started)
+									{
+										_black_clock->restart();
+										_white_clock->restart();
+										_is_game_started = true;
+									}
+									_turn ? _black_clock->start() : _white_clock->start();
+									_turn ? _white_clock->pause() : _black_clock->pause();
 									predictCheck();
 									_board.upateCastling(_turn);
 									_selected_piece_position.set("TS");
 									_board.isCheck();
-									const gameResult temp = _board.isCheckmateOrStalemate(_turn);
-									if (temp)
+									const gameResult is_game_finished = _board.isGameFinished(_turn);
+									if (is_game_finished)
 									{
-										_victory_screen = new VictoryScreen(temp);
-										_game_result = temp;
+										_victory_screen = new VictoryScreen(is_game_finished);
+										_game_result = is_game_finished;
+										_black_clock->restart();
+										_white_clock->restart();
 									}
 								}
 							}
@@ -194,11 +206,13 @@ void Game::pollEvents()
 							_board.upateCastling(_turn);
 							_selected_piece_position.set("TS");
 							_board.isCheck();
-							const gameResult temp = _board.isCheckmateOrStalemate(_turn);
-							if (temp)
+							const gameResult is_game_finished = _board.isGameFinished(_turn);
+							if (is_game_finished)
 							{
-								_victory_screen = new VictoryScreen(temp);
-								_game_result = temp;
+								_victory_screen = new VictoryScreen(is_game_finished);
+								_game_result = is_game_finished;
+								_black_clock->restart();
+								_white_clock->restart();
 							}
 						}
 					}
@@ -212,6 +226,7 @@ void Game::pollEvents()
 					updateAvailableMoves();
 					_board.hardColorReset();
 					_turn = white;
+					_is_game_started = false;
 					_taken_black = 0;
 					_taken_white = 0;
 					_game_result = nothing;
@@ -232,6 +247,14 @@ void Game::update()
 {
 	pollEvents();
 	updateMousePositions();
+	const gameResult is_game_finished = temp();
+	if (is_game_finished)
+	{
+		_victory_screen = new VictoryScreen(is_game_finished);
+		_game_result = is_game_finished;
+		_black_clock->restart();
+		_white_clock->restart();
+	}
 }
 
 void Game::render() const
@@ -250,6 +273,9 @@ void Game::render() const
 	{
 		_victory_screen->draw(_window);
 	}
+	_black_clock->draw(_window);
+	_white_clock->draw(_window);
+
 	_window->display();
 }
 
@@ -286,4 +312,22 @@ void Game::promotePawn()
 	_pieces.push_back(new_piece);
 	_board.setPiecesVector(_pieces);
 	_board.setChosenPiece(new_piece);
+}
+
+gameResult Game::temp()
+{
+	if (_is_game_started)
+	{
+		if (_white_clock->getRemainigTime() <= 0)
+		{
+			_is_game_started = false;
+			return black_won;
+		}
+		if (_black_clock->getRemainigTime() <= 0)
+		{
+			_is_game_started = false;
+			return white_won;
+		}
+	}
+	return nothing;
 }

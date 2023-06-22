@@ -11,6 +11,7 @@
 #include "Board.h"
 #include "PawnPromotion.h"
 #include "VictoryScreen.h"
+#include "Clock.h"
 
 #include <iostream>
 #include <vector>
@@ -37,6 +38,9 @@ class Game
 	bool _is_pawn_promotion;
 	gameResult _game_result;
 	VictoryScreen* _victory_screen;
+	Clock* _black_clock;
+	Clock* _white_clock;
+	bool _is_game_started;
 
 	void initializeWindow();
 	void initializePieces();
@@ -45,6 +49,7 @@ class Game
 	void updateAvailableMoves();
 	Position getClickedPosition() const;
 	void promotePawn();
+	gameResult temp();
 
 public:
 	Game();
