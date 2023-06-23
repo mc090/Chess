@@ -298,17 +298,12 @@ void Game::promotePawn()
 	{
 		new_piece = new Bishop(_chosen_piece->getSide(), _chosen_piece->getPosition().get());
 	}
-	auto it = _pieces.begin();
-	for (const auto* piece : _pieces)
-	{
-		if (piece->getPosition().get() == _chosen_piece->getPosition().get())
-		{
-			delete piece;
-			_pieces.erase(it);
-			break;
-		}
-		++it;
-	}
+
+	auto lambda = [&](const Piece* piece) { return piece->getPosition().get() == _chosen_piece->getPosition().get(); };
+	const auto piece = std::ranges::find_if(_pieces.begin(), _pieces.end(), lambda);
+	_pieces.erase(piece);
+	delete* piece;
+
 	_pieces.push_back(new_piece);
 	_board.setPiecesVector(_pieces);
 	_board.setChosenPiece(new_piece);

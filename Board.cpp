@@ -489,9 +489,6 @@ Position Board::enPassantPosition() const
 
 void Board::upateCastling(const team turn) const
 {
-	//3. nie ma szacha
-	//4. pole przez ktore przejdzie krul nie jest atakowane
-	//5. po roszadzie krol nie bedzie pod szachem
 	King* king = turn ? _black_king : _white_king;
 	if (king->getIsStartingPosition())
 	{

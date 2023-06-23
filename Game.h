@@ -16,6 +16,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <ranges>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
