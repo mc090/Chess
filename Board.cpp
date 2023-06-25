@@ -359,49 +359,57 @@ std::vector<Position> Board::getMovesTowardsDestination(const Position& destinat
 	return moves;
 }
 
-Piece* Board::makeMove(const Position& position, int& taken_black, int& taken_white)
+Piece* Board::makeMove(Position& old_position, const Position& new_position, 
+	int& taken_black, int& taken_white, const bool read_mode)
 {
 	const Position en_passant = enPassantPosition();
 	hardColorReset();
-	const Position old_position = _chosen_piece->getPosition();
-	_board[old_position]->setPositionColor();
-	if (_pieces_position[position])
+	if (read_mode)
 	{
-		_pieces_position[position]->setToDelete(taken_black, taken_white);
+		_chosen_piece = _pieces_position[old_position];
+	}
+	else
+	{
+		old_position = _chosen_piece->getPosition();
+	}
+	_board[old_position]->setPositionColor();
+	if (_pieces_position[new_position])
+	{
+		_pieces_position[new_position]->setToDelete(taken_black, taken_white);
 	}
 	if (dynamic_cast<Pawn*>(_chosen_piece))
 	{
 		if (_en_passant)
 		{
 			const int i = _chosen_piece->getSide() ? 1 : -1;
-			const Position pawn_position(position.getColumn(), char(position.getRow() + i));
-			if (position.get() == en_passant.get() && _pieces_position[pawn_position])
+			const Position pawn_position(new_position.getColumn(), char(new_position.getRow() + i));
+			if (new_position.get() == en_passant.get() && _pieces_position[pawn_position])
 			{
 				_pieces_position[pawn_position]->setToDelete(taken_black, taken_white);
 			}
 			_en_passant = false;
 		}
 		_chosen_piece->setStartingPositionFalse();
-		_chosen_piece->setPosition(position);
-		_board[position]->setPositionColor();
+		_chosen_piece->setPosition(new_position);
+		_board[new_position]->setPositionColor();
 		setEnPassant(old_position);
 	}
 	else
 	{
 		if (dynamic_cast<King*>(_chosen_piece) && _chosen_piece->getIsStartingPosition() &&
-			(position.get() == "C1" || position.get() == "G1" || position.get() == "C8" || position.get() == "G8"))
+			(new_position.get() == "C1" || new_position.get() == "G1" || new_position.get() == "C8" || new_position.get() == "G8"))
 		{
-			const int i = position.getColumn() == 'C' ? -2 : 1;
-			const int j = position.getColumn() == 'C' ? 1 : -1;
-			const Position rook_position(char(position.getColumn() + i), position.getRow());
-			const Position new_rook_position(char(position.getColumn() + j), position.getRow());
+			const int i = new_position.getColumn() == 'C' ? -2 : 1;
+			const int j = new_position.getColumn() == 'C' ? 1 : -1;
+			const Position rook_position(char(new_position.getColumn() + i), new_position.getRow());
+			const Position new_rook_position(char(new_position.getColumn() + j), new_position.getRow());
 			Piece* rook = _pieces_position[rook_position];
 			rook->setStartingPositionFalse();
 			rook->setPosition(new_rook_position);
 		}
 		_chosen_piece->setStartingPositionFalse();
-		_chosen_piece->setPosition(position);
-		_board[position]->setPositionColor();
+		_chosen_piece->setPosition(new_position);
+		_board[new_position]->setPositionColor();
 	}
 	return _chosen_piece;
 }

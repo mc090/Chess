@@ -58,7 +58,8 @@ public:
 	void getMove(const Position& position);
 	void setAvailableMoves(Piece* piece);
 	std::vector<Position> getMovesTowardsDestination(const Position& destination);
-	Piece* makeMove(const Position& position, int& taken_black, int& taken_white);
+	Piece* makeMove(Position& old_position, const Position& new_position,
+		int& taken_black, int& taken_white, bool read_mode);
 
 	bool checkForEnPassant(const Position& position);
 	void setEnPassant(const Position& old_position);

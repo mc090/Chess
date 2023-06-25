@@ -1,11 +1,11 @@
-﻿#pragma once
-
+module;
+import Enum;
+#include <string>
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
+export module PawnPromotion;
 
-#include "Enum.h"
 
-class PawnPromotion
+export class PawnPromotion
 {
 	sf::Texture _texture;
 	sf::Sprite _sprite;

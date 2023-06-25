@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Enum.h"
+import Enum;
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -19,6 +19,7 @@ public:
 	void start();
 	void pause();
 	void restart();
+	void setTime(int time);
 	int getRemainigTime() const;
 	void draw(sf::RenderWindow* window);
 };

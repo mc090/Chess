@@ -143,6 +143,7 @@
     <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Clock.cpp" />
+    <ClCompile Include="Enum.ixx" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="King.cpp" />
     <ClCompile Include="Knight.cpp" />
@@ -150,34 +151,35 @@
     <ClCompile Include="MoveMarker.cpp" />
     <ClCompile Include="Pawn.cpp" />
     <ClCompile Include="PawnPromotion.cpp" />
+    <ClCompile Include="PawnPromotion.ixx" />
     <ClCompile Include="Piece.cpp" />
     <ClCompile Include="Position.cpp" />
     <ClCompile Include="Queen.cpp" />
     <ClCompile Include="Rook.cpp" />
+    <ClCompile Include="SaveGame.cpp" />
     <ClCompile Include="Square.cpp" />
     <ClCompile Include="SquareBlack.cpp" />
     <ClCompile Include="SquareWhite.cpp" />
     <ClCompile Include="VictoryScreen.cpp" />
+    <ClCompile Include="VictoryScreen.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Clock.h" />
-    <ClInclude Include="Enum.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="MoveMarker.h" />
     <ClInclude Include="Pawn.h" />
-    <ClInclude Include="PawnPromotion.h" />
     <ClInclude Include="Piece.h" />
     <ClInclude Include="Position.h" />
     <ClInclude Include="Queen.h" />
     <ClInclude Include="Rook.h" />
+    <ClInclude Include="SaveGame.h" />
     <ClInclude Include="Square.h" />
     <ClInclude Include="SquareBlack.h" />
     <ClInclude Include="SquareWhite.h" />
-    <ClInclude Include="VictoryScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

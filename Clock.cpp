@@ -27,6 +27,12 @@ void Clock::restart()
 	_clock.restart();
 }
 
+void Clock::setTime(const int time)
+{
+	_time_when_stopped = time;
+	_clock.restart();
+}
+
 int Clock::getRemainigTime() const
 {
 	return _is_clock_started ? _time_when_stopped - (int)_clock.getElapsedTime().asSeconds() : _time_when_stopped;

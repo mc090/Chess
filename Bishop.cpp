@@ -2,8 +2,14 @@
 
 void Bishop::initializeTexture()
 {
-	const std::string team = _side ? "Black" : "White";
-	this->_texture.loadFromFile("Textures/" + team + "Bishop.png");
+	if (_side)
+	{
+		this->_texture.loadFromFile("Textures/BlackBishop.png");
+	}
+	else
+	{
+		this->_texture.loadFromFile("Textures/WhiteBishop.png");
+	}
 	this->_sprite.setTexture(this->_texture);
 }
 

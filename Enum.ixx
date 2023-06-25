@@ -1,12 +1,12 @@
-#pragma once
+export module Enum;
 
-enum team {
+export enum team {
 	taken = -1,
 	white,
 	black
 };
 
-enum gameResult
+export enum gameResult
 {
 	tie = -1,
 	nothing,

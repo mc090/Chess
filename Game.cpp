@@ -1,9 +1,6 @@
 #include "Game.h"
 
 
-
-
-
 void Game::initializeWindow()
 {
 	sf::Image icon;
@@ -51,6 +48,13 @@ void Game::initializePieces()
 	_board.setWhiteKing(white_king);
 }
 
+void Game::initializeGameSaving()
+{
+	_moves_made = new std::vector<std::pair<std::string, std::string>>;
+	std::thread save_game([&]() {	_file_manager.saveGameToFile(_moves_made); });
+	save_game.detach();
+}
+
 void Game::deletePieces()
 {
 	for (const auto& piece : _pieces) {
@@ -89,6 +93,7 @@ _selected_piece_position("SS"), _pawn_promotion(nullptr), _chosen_piece(nullptr)
 _game_result(nothing), _victory_screen(nullptr), _is_game_started(false)
 {
 	initializeWindow();
+	initializeGameSaving();
 	initializePieces();
 	_board.setPiecesVector(_pieces);
 	_board.updatePiecesPositions();
@@ -127,12 +132,14 @@ void Game::pollEvents()
 		switch (_event.type) {
 
 		case sf::Event::Closed:
+			saveTime();
 			_window->close();
 			break;
 
 		case sf::Event::KeyPressed:
 			if (_event.key.code == sf::Keyboard::Escape)
 			{
+				saveTime();
 				_window->close();
 			}
 			break;
@@ -143,14 +150,52 @@ void Game::pollEvents()
 				{
 					if (!_is_pawn_promotion)
 					{
+						if (!_is_game_started &&
+							_mouse_position.x >= 875 && _mouse_position.x < 1125 &&
+							_mouse_position.y >= 700 && _mouse_position.y < 750) {
+							*_moves_made = _file_manager.loadGameFromFile();
+							for (auto it = _moves_made->begin() + 1; it < _moves_made->end(); ++it)
+							{
+								Position old_position((*it).first);
+								Position new_position((*it).second);
+								_board.makeMove(old_position, new_position, _taken_black, _taken_white, true);
+								_board.update();
+								_turn = _turn ? white : black;
+							}
+							_white_clock->setTime(std::stoi(_moves_made->at(0).first));
+							_black_clock->setTime(std::stoi(_moves_made->at(0).second));
+							_is_game_started = true;
+							if (dynamic_cast<Pawn*>(_chosen_piece) &&
+								(_chosen_piece->getPosition().getRow() == '1' || _chosen_piece->getPosition().getRow() == '8'))
+							{
+								_pawn_promotion = new PawnPromotion(_turn);
+								_is_pawn_promotion = true;
+								break;
+							}
+							_board.update();
+							_turn ? _black_clock->start() : _white_clock->start();
+							_turn ? _white_clock->pause() : _black_clock->pause();
+							predictCheck();
+							_board.upateCastling(_turn);
+							_selected_piece_position.set("TS");
+							_board.isCheck();
+							const gameResult is_game_finished = _board.isGameFinished(_turn);
+							if (is_game_finished)
+							{
+								_victory_screen = new VictoryScreen(is_game_finished);
+								_game_result = is_game_finished;
+								_black_clock->restart();
+								_white_clock->restart();
+							}
+						}
 						if (_mouse_position.x >= 0 && _mouse_position.x < 800 &&
 							_mouse_position.y >= 0 && _mouse_position.y < 800) {
-							Position position = getClickedPosition();
-							if (!_board[position]->getIsMovePossible())
+							Position new_position = getClickedPosition();
+							if (!_board[new_position]->getIsMovePossible())
 							{
-								if (_board[position]->getIsOccupied() && _board.getAllPiecesPosition()[position]->getSide() == _turn)
+								if (_board[new_position]->getIsOccupied() && _board.getAllPiecesPosition()[new_position]->getSide() == _turn)
 								{
-									_selected_piece_position = position;
+									_selected_piece_position = new_position;
 									_board.getMove(_selected_piece_position);
 								}
 							}
@@ -158,7 +203,15 @@ void Game::pollEvents()
 							{
 								if (_selected_piece_position.get() != "TS")
 								{
-									_chosen_piece = _board.makeMove(position, _taken_black, _taken_white);
+									Position old_position("00");
+									_chosen_piece = _board.makeMove(old_position, new_position, _taken_black, _taken_white, false);
+									if (!_is_game_started)
+									{
+										_black_clock->restart();
+										_white_clock->restart();
+										_is_game_started = true;
+									}
+									saveMove(old_position, new_position);
 									if (dynamic_cast<Pawn*>(_chosen_piece) &&
 										(_chosen_piece->getPosition().getRow() == '1' || _chosen_piece->getPosition().getRow() == '8'))
 									{
@@ -168,12 +221,6 @@ void Game::pollEvents()
 									}
 									_board.update();
 									_turn = _turn ? white : black;
-									if (!_is_game_started)
-									{
-										_black_clock->restart();
-										_white_clock->restart();
-										_is_game_started = true;
-									}
 									_turn ? _black_clock->start() : _white_clock->start();
 									_turn ? _white_clock->pause() : _black_clock->pause();
 									predictCheck();
@@ -219,6 +266,7 @@ void Game::pollEvents()
 				}
 				else
 				{
+					resetGameSaving();
 					deletePieces();
 					initializePieces();
 					_board.setPiecesVector(_pieces);
@@ -273,6 +321,10 @@ void Game::render() const
 	{
 		_victory_screen->draw(_window);
 	}
+	if (!_is_game_started)
+	{
+		_file_manager.drawLoadingButton(_window);
+	}
 	_black_clock->draw(_window);
 	_white_clock->draw(_window);
 
@@ -301,8 +353,8 @@ void Game::promotePawn()
 
 	auto lambda = [&](const Piece* piece) { return piece->getPosition().get() == _chosen_piece->getPosition().get(); };
 	const auto piece = std::ranges::find_if(_pieces.begin(), _pieces.end(), lambda);
-	_pieces.erase(piece);
 	delete* piece;
+	_pieces.erase(piece);
 
 	_pieces.push_back(new_piece);
 	_board.setPiecesVector(_pieces);
@@ -325,4 +377,34 @@ gameResult Game::temp()
 		}
 	}
 	return nothing;
+}
+
+void Game::saveMove(const Position& old_position, const Position& new_position)
+{
+	saveTime();
+	_moves_made->push_back({ old_position.get(), new_position.get() });
+	_file_manager.save();
+}
+
+void Game::saveTime()
+{
+	if (_moves_made->empty())
+	{
+		_moves_made->push_back({
+			std::to_string(_white_clock->getRemainigTime()),
+			std::to_string(_black_clock->getRemainigTime()) });
+	}
+	else
+	{
+		_moves_made->at(0) = {
+			std::to_string(_white_clock->getRemainigTime()),
+			std::to_string(_black_clock->getRemainigTime()) };
+	}
+	_file_manager.save();
+}
+
+void Game::resetGameSaving()
+{
+	_moves_made->clear();
+	_file_manager.incGameNumber();
 }

@@ -9,15 +9,16 @@
 #include "SquareBlack.h"
 #include "SquareWhite.h"
 #include "Board.h"
-#include "PawnPromotion.h"
-#include "VictoryScreen.h"
 #include "Clock.h"
-
+#include "SaveGame.h"
+import PawnPromotion;
+import VictoryScreen;
+#include <thread>
 #include <iostream>
 #include <vector>
 #include <set>
+#include <string>
 #include <ranges>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -42,15 +43,21 @@ class Game
 	Clock* _black_clock;
 	Clock* _white_clock;
 	bool _is_game_started;
+	std::vector<std::pair<std::string, std::string>>* _moves_made;
+	SaveGame _file_manager;
 
 	void initializeWindow();
 	void initializePieces();
+	void initializeGameSaving();
 	void deletePieces();
 	void predictCheck();
 	void updateAvailableMoves();
 	Position getClickedPosition() const;
 	void promotePawn();
 	gameResult temp();
+	void saveMove(const Position& old_position, const Position& new_position);
+	void saveTime();
+	void resetGameSaving();
 
 public:
 	Game();

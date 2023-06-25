@@ -1,11 +1,9 @@
-﻿#pragma once
-
+module;
+import Enum;
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
+export module VictoryScreen;
 
-#include "Enum.h"
-
-class VictoryScreen
+export class VictoryScreen
 {
 	sf::Texture _texture;
 	sf::Sprite _sprite;

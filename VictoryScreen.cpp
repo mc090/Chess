@@ -1,4 +1,4 @@
-﻿#include "VictoryScreen.h"
+﻿module VictoryScreen;
 
 VictoryScreen::VictoryScreen(const gameResult& game_result)
 {

@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Enum.h"
 #include "Position.h"
+import Enum;
 
 #include <iostream>
 #include <vector>
 
 #include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Audio.hpp>
 
 
 class Piece
