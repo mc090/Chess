@@ -18,6 +18,7 @@ class SaveGame
 	std::binary_semaphore _saving_game{0};
 	std::filesystem::path _file_directory;
 	std::filesystem::path _file_path;
+	std::filesystem::path _last_game_path;
 	int _game_number;
 	void initializeLoadingButton();
 
@@ -31,4 +32,5 @@ public:
 	void save();
 	void incGameNumber();
 	void drawLoadingButton(sf::RenderWindow* window) const;
+	bool isLastGamePathAvaliable() const;
 };

@@ -151,6 +151,7 @@ void Game::pollEvents()
 					if (!_is_pawn_promotion)
 					{
 						if (!_is_game_started &&
+							_file_manager.isLastGamePathAvaliable() &&
 							_mouse_position.x >= 875 && _mouse_position.x < 1125 &&
 							_mouse_position.y >= 700 && _mouse_position.y < 750) {
 							*_moves_made = _file_manager.loadGameFromFile();
@@ -321,7 +322,7 @@ void Game::render() const
 	{
 		_victory_screen->draw(_window);
 	}
-	if (!_is_game_started)
+	if (!_is_game_started && _file_manager.isLastGamePathAvaliable())
 	{
 		_file_manager.drawLoadingButton(_window);
 	}
