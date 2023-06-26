@@ -46,27 +46,64 @@ class Game
 	std::vector<std::pair<std::string, std::string>>* _moves_made;
 	SaveGame _file_manager;
 
+	// Tworzy okno
 	void initializeWindow();
+
+	// Tworzy bierki i zapisuje je w _pieces
 	void initializePieces();
+
+	// Tworzy w¹tek zapisuj¹cy stan rozgrywki do pliku
 	void initializeGameSaving();
+
+	// Usuwa wszyskie bierki
 	void deletePieces();
+
+	// Dla ka¿dej bierki ustala wektor ruchów bierki uwzglêdniaj¹c informacjê czy,
+	// po ich wykonaniu król koloru bierki nie bêdzie atakowany
 	void predictCheck();
+
+	// Aktualizuje wektor dostêpnych ruchów dla ka¿dej bierki
 	void updateAvailableMoves();
+
+	// Zwraca pozycjê myszki, gdy zosta³o wykonane klikniêcie
 	Position getClickedPosition() const;
+
+	// Wykonuje promocjê piona
 	void promotePawn();
-	gameResult temp();
+
+	// Zwraca informacjê o tym gra zakonczy³a siê przez brak czasu,
+	// a jeœli tak to który zawodnik wygra³
+	gameResult isGameFinishedByTime();
+
+	// Zapisuje ruch do pliku
 	void saveMove(const Position& old_position, const Position& new_position);
+
+	// Zapisuje stan zegarów do pliku
 	void saveTime();
+
+	// Tworzy nowy plik do zapisu stanu gry
 	void resetGameSaving();
 
 public:
+
+	// Konstruktor
 	Game();
+
+	// Destruktor
 	~Game();
 
+	// Zwraca true, gry okno jest otwarte
 	bool getWindowIsOpen() const;
 
+	// 
 	void pollEvents();
+
+	// Aktualizje informacje o grze
 	void update();
+
+	// Aktualizuje pozycjê myszki
 	void updateMousePositions();
+
+	// Wyœwietla obiekty na ekranie
 	void render() const;
 };

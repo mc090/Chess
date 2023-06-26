@@ -10,7 +10,11 @@ class MoveMarker
 	sf::CircleShape _sprite;
 
 public:
+
+	// Konstruktor
 	MoveMarker(int x, int y, float radius);
+
+	// Pokazuje znacznik ruchu na ekranie
 	void draw(sf::RenderWindow* window) const;
 };
 

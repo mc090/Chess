@@ -20,17 +20,33 @@ class SaveGame
 	std::filesystem::path _file_path;
 	std::filesystem::path _last_game_path;
 	int _game_number;
+
+	// Tworzy przycisk odczytu ostatniej zapisanej gry
 	void initializeLoadingButton();
 
+	// Zapisuje ruchy do pliku
 	void saveMovesToFile(const std::vector<std::pair<std::string, std::string>>* moves_made) const;
 
 public:
 
+	// Konstruktor
 	SaveGame();
+
+	// Zapisuje stan gry do pliku
 	void saveGameToFile(const std::vector<std::pair<std::string, std::string>>* moves_made);
+
+	// Zwraca wektor reprezentuj¹cego stan wczytanej gry
 	std::vector<std::pair<std::string, std::string>> loadGameFromFile();
+
+	// Umo¿liwia zapis do pliku
 	void save();
+
+	// Zwiêksza nazwê pliku o jeden
 	void incGameNumber();
+
+	// Pokazuje przycisk odczytu ostatniej zapisanej gry na ekranie
 	void drawLoadingButton(sf::RenderWindow* window) const;
+
+	// Zwraca true, gdy istnieje plik z zapisan¹ ostatni¹ rozgrywk¹
 	bool isLastGamePathAvaliable() const;
 };

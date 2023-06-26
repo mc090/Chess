@@ -11,7 +11,7 @@ void SquareBlack::setDefaultColor()
 	_sprite.setFillColor(sf::Color(119, 110, 122));
 }
 
-void SquareBlack::setPositionColor()
+void SquareBlack::setLastMoveColor()
 {
 	_sprite.setFillColor(sf::Color(187, 201, 64));
 }

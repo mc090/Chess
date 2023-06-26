@@ -36,7 +36,7 @@ void Board::updatePiecesPositions()
 		Position position = piece->getPosition();
 		_pieces_position[position] = piece;
 	}
-	updateMoveMarkers();
+	updateIsOccupied();
 }
 
 
@@ -54,7 +54,7 @@ void Board::update()
 {
 	updatePiecesPositions();
 	updateAvailableMoves();
-	getAllAvaliableMoves();
+	updateAllAvaliableMoves();
 }
 
 void Board::setPiecesVector(const std::vector<Piece*>& pieces)
@@ -83,7 +83,7 @@ void Board::setChosenPiece(Piece* piece)
 	_chosen_piece = piece;
 }
 
-void Board::updateMoveMarkers()
+void Board::updateIsOccupied()
 {
 	for (const auto& square : _board)
 	{
@@ -154,16 +154,16 @@ std::vector<Position> Board::predictCheck(Piece* piece)
 	{
 		if (_pieces_position[move] && _pieces_position[move] != piece)
 		{
-			Piece* p = _pieces_position[move];
-			const team t = p->getSide();
-			p->setSide(taken);
+			Piece* taken_piece = _pieces_position[move];
+			const team taken_side = taken_piece->getSide();
+			taken_piece->setSide(taken);
 			piece->setPosition(move);
 			update();
 			if (!checkForCheck(side))
 			{
 				valid_moves.push_back(move);
 			}
-			p->setSide(t);
+			taken_piece->setSide(taken_side);
 		}
 		else
 		{
@@ -180,7 +180,7 @@ std::vector<Position> Board::predictCheck(Piece* piece)
 	return valid_moves;
 }
 
-void Board::getAllAvaliableMoves()
+void Board::updateAllAvaliableMoves()
 {
 	std::set<Position> black_moves;
 	std::set<Position> white_moves;
@@ -372,7 +372,7 @@ Piece* Board::makeMove(Position& old_position, const Position& new_position,
 	{
 		old_position = _chosen_piece->getPosition();
 	}
-	_board[old_position]->setPositionColor();
+	_board[old_position]->setLastMoveColor();
 	if (_pieces_position[new_position])
 	{
 		_pieces_position[new_position]->setToDelete(taken_black, taken_white);
@@ -391,7 +391,7 @@ Piece* Board::makeMove(Position& old_position, const Position& new_position,
 		}
 		_chosen_piece->setStartingPositionFalse();
 		_chosen_piece->setPosition(new_position);
-		_board[new_position]->setPositionColor();
+		_board[new_position]->setLastMoveColor();
 		setEnPassant(old_position);
 	}
 	else
@@ -409,7 +409,7 @@ Piece* Board::makeMove(Position& old_position, const Position& new_position,
 		}
 		_chosen_piece->setStartingPositionFalse();
 		_chosen_piece->setPosition(new_position);
-		_board[new_position]->setPositionColor();
+		_board[new_position]->setLastMoveColor();
 	}
 	return _chosen_piece;
 }
@@ -429,13 +429,13 @@ bool Board::checkForEnPassant(const Position& position)
 	return false;
 }
 
-void Board::setEnPassant(const Position& old_position)
+void Board::setEnPassant(const Position& position)
 {
-	if (old_position.getRow() == '2' && _chosen_piece->getPosition().getRow() == '4' ||
-		old_position.getRow() == '7' && _chosen_piece->getPosition().getRow() == '5')
+	if (position.getRow() == '2' && _chosen_piece->getPosition().getRow() == '4' ||
+		position.getRow() == '7' && _chosen_piece->getPosition().getRow() == '5')
 	{
 		const int i = _chosen_piece->getSide() ? -1 : 1;
-		const Position en_passant(old_position.getColumn(), char(old_position.getRow() + i));
+		const Position en_passant(position.getColumn(), char(position.getRow() + i));
 		_board[en_passant]->setIsEnPassantPossible(true);
 	}
 }
@@ -450,7 +450,7 @@ void Board::draw(sf::RenderWindow* window) const
 
 gameResult Board::isGameFinished(const team turn)
 {
-	getAllAvaliableMoves();
+	updateAllAvaliableMoves();
 	if (turn == black && _black_avaliable_moves.empty() ||
 		turn == white && _white_avaliable_moves.empty())
 	{

@@ -16,17 +16,17 @@ Rook::Rook(const team side, const std::string& position) :Piece(side, position)
 }
 
 
-void Rook::getMove(std::vector<Position>& potential_destinations, const int& i, const int& j) const
+void Rook::getMove(std::vector<Position>& potential_destinations, const int& x, const int& y) const
 {
 	char column = _position.getColumn();
 	char row = _position.getRow();
 	do
 	{
-		column += i;
-		row += j;
+		column += x;
+		row += y;
 		if (column < 'A' or column > 'H' or row < '1' or row > '8')
 		{
-			const Position position(column - i, row - j);
+			const Position position(column - x, row - y);
 			if (position.get() != _position.get())
 			{
 				potential_destinations.push_back(position);

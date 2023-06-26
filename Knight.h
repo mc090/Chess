@@ -4,13 +4,23 @@
 
 class Knight final : public Piece
 {
+	// £aduje teksturê z pliku
 	void initializeTexture();
 
+	// Dodaje do wektora potencjaln¹ pozycje koñcow¹ w kierunku okroœlonym przez zmienne "x" oraz "y"
+	void getMove(std::vector<Position>& potential_destinations, const int& x,const int& y) const;
+
 public:
-	Knight(const team side, const std::string& position);
+
+	// Konstruktor
+	Knight(team side, const std::string& position);
+
+	// Destruktor
 	~Knight() override = default;
 
-	void getMove(std::vector<Position>& potential_destinations, const int& i,const int& j) const;
+	// Zwraca wektor potencjalnych pozycji koñcowych
 	std::vector<Position> getPotentialDestinations() override;
-	virtual std::vector<Position> setPathTo(const Position& destination) override;
+
+	// Zwraca wektor pozycji prowadz¹cych do pozycji koñcowej
+	std::vector<Position> setPathTo(const Position& destination) override;
 };

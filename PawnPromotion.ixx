@@ -11,6 +11,10 @@ export class PawnPromotion
 	sf::Sprite _sprite;
 
 public:
+
+	// Konstruktor
 	explicit PawnPromotion(team turn);
+
+	// Pokazuje menu wyboru figury na ekranie
 	void draw(sf::RenderWindow* window) const;
 };

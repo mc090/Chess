@@ -296,7 +296,7 @@ void Game::update()
 {
 	pollEvents();
 	updateMousePositions();
-	const gameResult is_game_finished = temp();
+	const gameResult is_game_finished = isGameFinishedByTime();
 	if (is_game_finished)
 	{
 		_victory_screen = new VictoryScreen(is_game_finished);
@@ -362,7 +362,7 @@ void Game::promotePawn()
 	_board.setChosenPiece(new_piece);
 }
 
-gameResult Game::temp()
+gameResult Game::isGameFinishedByTime()
 {
 	if (_is_game_started)
 	{

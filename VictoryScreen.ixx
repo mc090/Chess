@@ -9,6 +9,10 @@ export class VictoryScreen
 	sf::Sprite _sprite;
 
 public:
+
+	// Konstruktor
 	explicit VictoryScreen(const gameResult& game_result);
+
+	// Pokazuje pole informuj¹ce o wygranej gracza lub remisie na ekranie
 	void draw(sf::RenderWindow* window) const;
 };
