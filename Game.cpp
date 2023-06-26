@@ -106,6 +106,8 @@ Game::~Game()
 {
 	delete _window;
 	deletePieces();
+	_file_manager.closeGame();
+	_file_manager.save();
 };
 
 

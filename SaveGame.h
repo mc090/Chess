@@ -20,6 +20,7 @@ class SaveGame
 	std::filesystem::path _file_path;
 	std::filesystem::path _last_game_path;
 	int _game_number;
+	bool _is_game_open;
 
 	// Tworzy przycisk odczytu ostatniej zapisanej gry
 	void initializeLoadingButton();
@@ -49,4 +50,6 @@ public:
 
 	// Zwraca true, gdy istnieje plik z zapisan¹ ostatni¹ rozgrywk¹
 	bool isLastGamePathAvaliable() const;
+
+	void closeGame();
 };
