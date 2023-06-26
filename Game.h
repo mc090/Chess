@@ -95,7 +95,7 @@ public:
 	// Zwraca true, gry okno jest otwarte
 	bool getWindowIsOpen() const;
 
-	// 
+	// Obs³uga zdarzeñ
 	void pollEvents();
 
 	// Aktualizje informacje o grze
