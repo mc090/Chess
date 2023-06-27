@@ -44,7 +44,7 @@ void SaveGame::saveGameToFile(const std::vector<std::pair<std::string, std::stri
 	while (true)
 	{
 		_saving_game.acquire();
-		if (_is_game_open)
+		if (!_is_game_open)
 		{
 			break;
 		}
