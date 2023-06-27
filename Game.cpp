@@ -106,6 +106,8 @@ Game::~Game()
 {
 	delete _window;
 	deletePieces();
+	_file_manager.closeGame();
+	_file_manager.save();
 };
 
 
@@ -131,11 +133,13 @@ void Game::pollEvents()
 	while (_window->pollEvent(_event)) {
 		switch (_event.type) {
 
+		// Zamkniêcie okna
 		case sf::Event::Closed:
 			saveTime();
 			_window->close();
 			break;
 
+		// Naciœniêcie klawisza escape - zamkniêcie okna
 		case sf::Event::KeyPressed:
 			if (_event.key.code == sf::Keyboard::Escape)
 			{
@@ -143,6 +147,8 @@ void Game::pollEvents()
 				_window->close();
 			}
 			break;
+
+		// Wykonywanie akcji po klikniêciu myszk¹
 		case sf::Event::MouseButtonPressed:
 			if (_event.mouseButton.button == sf::Mouse::Left)
 			{

@@ -16,7 +16,10 @@ void SaveGame::saveMovesToFile(const std::vector<std::pair<std::string, std::str
 	file_write.close();
 }
 
-SaveGame::SaveGame() :_file_directory(std::filesystem::current_path() += "\\GameSaves\\"), _game_number(1)
+SaveGame::SaveGame() :
+	_file_directory(std::filesystem::current_path() += "\\GameSaves\\"),
+	_game_number(1),
+	_is_game_open(true)
 {
 	initializeLoadingButton();
 	if (!std::filesystem::exists(_file_directory))
@@ -41,6 +44,10 @@ void SaveGame::saveGameToFile(const std::vector<std::pair<std::string, std::stri
 	while (true)
 	{
 		_saving_game.acquire();
+		if (!_is_game_open)
+		{
+			break;
+		}
 		saveMovesToFile(moves_made);
 	}
 }
@@ -80,4 +87,9 @@ void SaveGame::drawLoadingButton(sf::RenderWindow* window) const
 bool SaveGame::isLastGamePathAvaliable() const
 {
 	return std::filesystem::exists(_last_game_path) ? true : false;
+}
+
+void SaveGame::closeGame()
+{
+	_is_game_open = false;
 }
